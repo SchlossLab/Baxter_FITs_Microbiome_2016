@@ -4,3 +4,4 @@
 *.logfile
 *.Rdata
 *_cache
+*_files
