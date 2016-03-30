@@ -1,0 +1,41 @@
+set.dir(input=scratch/, output=scratch/)
+
+# OTU clustering
+make.shared(list=fit.final.an.unique_list.list, count=fit.final.counts, label=0.03)
+classify.otu(list=fit.final.an.unique_list.list, count=fit.final.counts, taxonomy=fit.final.taxonomy, label=0.03)
+dist.shared(shared=fit.final.an.unique_list.shared, calc=thetayc-sharedsobs, subsample=T, iters=100, processors=8)
+sub.sample(shared=fit.final.an.unique_list.shared)
+filter.shared(shared=fit.final.an.unique_list.0.03.subsample.shared, minpercentsamples=1, makerare=F, minpercent=0.0001)
+
+phylotyping
+phylotype(taxonomy=fit.final.taxonomy, label=1)
+make.shared(list=fit.final.tx.list, count=fit.final.counts, label=1)
+classify.otu(list=fit.final.tx.list, count=fit.final.counts, taxonomy=fit.final.taxonomy, label=1)
+sub.sample(shared=fit.final.tx.shared)
+
+
+#mantel test
+get.groups(shared=fit.final.an.unique_list.shared, accnos=stool.accnos)
+system(mv scratch/fit.final.an.unique_list.0.03.pick.shared scratch/stool.an.shared)
+get.groups(shared=fit.final.an.unique_list.shared, accnos=fit_only.accnos)
+system(mv scratch/fit.final.an.unique_list.0.03.pick.shared scratch/fit_only.an.shared)
+dist.shared(shared=stool.an.shared, calc=thetayc, subsample=T, iters=100)
+dist.shared(shared=fit_only.an.shared, calc=thetayc, subsample=T, iters=100)
+mantel(phylip1=fit_only.an.thetayc.0.03.lt.ave.dist, phylip2=stool.an.thetayc.0.03.lt.ave.dist, method=spearman, iters=1000)
+
+system(mv scratch/stool.an.shared data/)
+system(mv scratch/stool.an.thetayc.0.03.lt.ave.dist data/)
+system(mv scratch/fit_only.an.shared data/)
+system(mv scratch/fit_only.an.thetayc.0.03.lt.ave.dist data/)
+system(mv scratch/fit_only.an.thetayc.0.03.lt.ave.mantel data/)
+
+system(mv scratch/fit.final.tx.shared data/)
+system(mv scratch/fit.final.tx.1.subsample.shared data/)
+system(mv scratch/fit.final.tx.1.cons.taxonomy data/)
+
+system(mv scratch/fit.final.an.unique_list.shared data/)
+system(mv scratch/fit.final.an.unique_list.0.03.subsample.shared data/)
+system(mv scratch/fit.final.an.unique_list.0.03.subsample.0.03.filter.shared data/)
+system(mv scratch/fit.final.an.unique_list.thetayc.0.03.lt.ave.dist data/)
+system(mv scratch/fit.final.an.unique_list.sharedsobs.0.03.lt.ave.dist data/)
+system(mv scratch/fit.final.an.unique_list.0.03.cons.taxonomy data/)

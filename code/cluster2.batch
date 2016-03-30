@@ -1,0 +1,2 @@
+set.dir(input=scratch/, output=scratch/)
+cluster.split(file=fit.final.file, processors=1)

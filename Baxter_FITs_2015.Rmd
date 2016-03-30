@@ -1,0 +1,314 @@
+---
+title: DNA from Fecal Immunochemical Test can replace stool for microbiota-based colorectal
+  cancer screening
+csl: aacr.csl
+output: 
+  word_document:
+    keep_md: true
+    reference_docx: manuscript_format.docx
+bibliography: references.bibtex
+---
+
+**Authors:** Nielson T. Baxter^1^, Mack T. Ruffin IV^2^, Mary A.M. Rogers^3^, and Patrick D. Schloss^1\*^
+
+
+**Affiliations:**  
+^1^Department of Microbiology and Immunology, University of Michigan, Ann Arbor, Michigan.  
+^2^Department of Family Medicine, University of Michigan, Ann Arbor, Michigan.  
+^3^Department of Internal Medicine, University of Michigan, Ann Arbor, Michigan.  
+^\*^Corresponding author: pschloss@umich.edu
+
+```{r startup, echo=F, message=F, warning=F}
+deps = c("rmarkdown","AUCRF","pROC");
+for (dep in deps){
+  if (dep %in% installed.packages()[,"Package"] == FALSE){
+    install.packages(as.character(dep), quiet=TRUE);
+  }
+  library(dep, verbose=FALSE, character.only=TRUE)
+}
+
+setwd('~/Desktop/Baxter_FITs_2015/')
+meta <- read.delim('data/metadata.tsv', header=T, sep='\t')
+shared <- read.table('data/fit.final.an.unique_list.0.03.subsample.0.03.filter.shared', header=T)
+shared <- shared[,-c(1,3)]
+
+meta$lesion <- c()
+meta$lesion[meta$dx=='normal'] <- 0
+meta$lesion[meta$dx!='normal'] <- 1
+meta$lesion <- as.factor(meta$lesion)
+
+```
+
+
+###Abstract  
+(≤ 250 words, unstructured)
+
+
+###Introduction  
+Although colorectal cancer (CRC) mortality has declined in recent decades, it remains the second leading cause of death among cancers in the United States [@siegel2014colorectal]. Early detection of CRC is critical since patients whose tumors are detected at an early stage have a greater than 90% chance of survival. However more than a third of individuals for whom screening is recommended, do not adhere to screening guidelines [@centers2013vital]. The high cost and invasive nature of structural exams, like colonoscopy and sigmoidoscopy, are barriers for many people [@hsia2000importance;@jones2010barriers]. Unfortunately less expensive, non-invasive tests, such as the guaiac fecal occult blood test (gFOBT) and fecal immunochemical test (FIT), fail to reliably detect adenomas [@hundt2009comparative]. Thus, there is a need for novel non-invasive screening methods with improved sensitivity for early stage colonic lesions.
+
+Several studies have demonstrated the potential for the gut microbiota to be used to detect CRC [@zeller2014potential;@yu2015metagenomic]. Moreover, we have shown that combining microbiota-analysis with conventional diagnostics, like gFOBT and FIT, can significantly improve the detection of colonic lesions over either method by itself [@zackular2014human;@baxter2016microbiota]. One limitation of microbiota-based CRC screening is the need to collect and process separate stool samples for microbiota characterization. If FIT and microbiota characterization are to be included in a single test, it would be more efficient and less expensive to use a single stool sample for both tests.  We hypothesize that the small amount of fecal material contained in FIT sampling cartridges is sufficient to perform both hemoglobin quantification and microbiota characterization.  To test this hypothesis, we isolated bacterial DNA from the residual buffer of FIT cartriges that had already been used for quantifying hemoglobin concentrations from stool. We then compared the bacterial composition of the FIT cartridge to that of DNA isolated directly from the patient's stool sample and assessed the ability of FIT cartidge-derived DNA to be used for microbiota-based CRC screening.
+
+
+###Materials and Methods
+**Study Design / Diagnoses / Stool Collection.** Stool samples from were obtained through the Great Lakes-New England Early Detection Research Network. Patients were asymptomatic, at least 18 years old, willing to sign informed consent, able to tolerate removal of 58 mL of blood, and willing to collect a stool sample. Patient age at the time of enrollment ranged from 29 to 89 with a median of 60. Patients were were excluded if they had undergone surgery, radiation, or chemotherapy for current CRC prior to baseline samples or had inflammatory bowel disease, known hereditary non-polyposis CRC, or familial adenomatous polyposis. Patient diagnoses were determined by colonoscopic examination and histopathological review of any biopsies taken. Colonoscopies were performed and fecal samples were collected in four locations: Toronto (Ontario, Canada), Boston (Massachusetts, USA), Houston (Texas, USA), and Ann Arbor (Michigan, USA). Stool samples were packed in ice, shipped to a processing center via next day delivery and stored at -80˚C. Fecal material for FIT was collected from frozen stool aliquots using OC FIT-CHEK sampling bottles (Polymedco Inc.), processed using an OC-Auto Micro 80 automated system (Polymedco Inc.), and stored at -20C. The University of Michigan Institutional Review Board approved this study, and all subjects provided informed consent.
+
+**16S rRNA gene sequencing.** Processed FIT samples were thawed, and 100µl of buffer was withdrawn by pipette for DNA extraction. DNA was isolated from FIT samples or matching stool samples using the PowerSoil-htp 96 Well Soil DNA isolation kit (MO BIO Laboratories) and an epMotion 5075 automated pipetting system (Eppendorf). The V4 region of the bacterial 16S rRNA gene was amplified using custom barcoded primers and sequenced as described previously using an Illumina MiSeq sequencer [@miseq]. The 16S rRNA gene sequences were curated using the mothur software package, as described previously [@mothur;@miseq]. Curated sequences were clustered into operational taxonomic units (OTUs) using a 97% similarity cutoff with the average neighbor clustering algorithm. Sequences were classified using a naive Bayesian classifier trained against a 16S rRNA gene training set provided by the Ribosomal Database Project (RDP) [@wang2007naive]. Species-level classifications for OTUs of interest were determined by blasting the predominant sequences within each OTU to the NCBI 16S rRNA database. The putative species was only reported for OTUs with greater than 99% sequence identity to a single species in the database; otherwise the consensus RDP classification was used. 
+
+**Statistical Methods.** All statistical analyses were performed using R (v.3.2.0). Random forest models were generated using the AUCRF algorithm for feature reduction and maximizing model performance [@calle2011auc]. The most predictive OTUs were determined based on mean decrease in accuracy when removed from the model. The AUC of ROC curves were compared using the method described by DeLong et al. [@delong1988comparing]. The optimal cutoff for each model was determined using Youden's _J_ statistic as implemented in the pROC package in R [@youden1950index]. 
+
+
+###Results
+  
+  
+```{r distance_density, echo=F, warning=F, message=F, results='hide', cache=T}
+source('code/read.dist.R')
+dist <- read.dist('data/fit.final.an.unique_list.thetayc.0.03.lt.ave.dist')
+
+fits <- grep('fit', row.names(dist), value=T)
+stools <- grep('fit', row.names(dist), value=T, invert=T)
+
+pairs <- rep(NA, length(fits))
+for(i in 1:length(fits)){
+  pairs[i]<-1-as.numeric(dist[fits[i],stools[i]])
+}  
+  
+stool2stool <- dist[stools,stools]
+stool2stool <- 1-as.numeric(stool2stool[upper.tri(stool2stool, diag=F)])
+
+fit2fit <- dist[fits,fits]
+fit2fit <- 1-as.numeric(fit2fit[upper.tri(fit2fit, diag=F)])
+
+stool2fit <- 1-as.numeric(as.vector(unlist(dist[stools,fits])))
+
+
+png('results/figure1.png', width=9, height=4.5, units='in', res=300)
+layout(matrix(c(2,1), nrow=1), widths=c(1,1.05))
+par(mar=c(4,3.5,2,0.5), mgp=c(2,0.5,0), oma=c(0,0,0,0))
+plot(density(pairs), type='l',lwd=3, col='red', ylim=c(0,4), xlab='Community Similarity (1-thetaYC)', main='', las=1, tck=-0.02)
+points(density(stool2stool), type='l',lwd=3, col='orange')
+points(density(fit2fit), type='l',lwd=3, col='blue')
+points(density(stool2fit), type='l',lwd=3, col='green4')
+legend('topright', c('Stool/FIT pairs','Between FITs & Stool','Between Stools','Between FITs'), col=c('red','green4','orange','blue'), lwd=3, bty='n', cex=0.8)
+points(0.7,max(density(pairs)$y)*1.07, pch=8)
+mtext('B', at=-0.3, side=3, line=0.1, font=2)
+
+ks.test(pairs, fit2fit, alternative='greater')
+
+
+dist <- read.dist('data/fit.final.an.unique_list.sharedsobs.0.03.lt.ave.dist', diag=0)
+
+pairs <- rep(NA, length(fits))
+for(i in 1:length(fits)){
+  pairs[i]<-as.numeric(dist[fits[i],stools[i]])
+}  
+  
+stool2stool <- dist[stools,stools]
+stool2stool <- as.numeric(stool2stool[upper.tri(stool2stool, diag=F)])
+
+fit2fit <- dist[fits,fits]
+fit2fit <- as.numeric(fit2fit[upper.tri(fit2fit, diag=F)])
+
+stool2fit <- as.numeric(as.vector(unlist(dist[stools,fits])))
+
+
+par(mar=c(4,4,2,1))
+plot(density(pairs), type='l', lwd=3, col='red', ylim=c(0,0.025), xlab='Number of shared OTUs', ylab='', main='', las=1)
+points(density(stool2stool), type='l',lwd=3, col='orange')
+points(density(fit2fit), type='l',lwd=3, col='blue')
+points(density(stool2fit), type='l',lwd=3, col='green4')
+legend('topright', c('Stool/FIT pairs','Between FITs & Stool','Between Stools','Between FITs'), col=c('red','green4','orange','blue'), lwd=3, bty='n', cex=0.8)
+points(median(pairs),max(density(pairs)$y)*1.1, pch=8)
+mtext('Density',side=2, at=0.0125, line=3)
+mtext('A', at=-50, side=3, line=0.1, font=2)
+dev.off()
+
+
+```
+
+
+First we tested whether the bacterial community profiles from FIT cartridges recapiulated their stool counterparts. We compared the number of species shared between FIT/stool pairs from the same individual to the number of species shared between individuals. FIT cartridges and stool from the same individual had significantly more bacterial populations in common (Fig. 1A, p<0.001), indicating that community membership was conserved between stool and FIT cartridges. Next we calculated the similarity in community structure between samples using 1-thetaYC index. This metric compares the presence or absence of bacterial populations along with their relative abundance. The bacterial community structure of stool and FIT samples from the same individual were significantly more similar to each other than to stool or FIT from other individuals (Fig. 1B, p<0.001, two-sample Kolmogorov-Smirnov Test). Furthermore the inter-personal variation in community structure between the stool samples of individuals was conserved in samples from FIT cartridges (p<0.001, Mantel test). These findings suggest that that the overall composition of the microbiota in FIT cartridges matches that of stool.
+
+```{r trimTax, engine='sh', echo=F, results='hide'}
+python code/trimTax.py data/fit.final.tx.1.cons.taxonomy data/fit.phyla.tax 5
+python code/trimTax.py data/fit.final.an.unique_list.0.03.cons.taxonomy data/fit.otus.tax 1
+
+```
+
+
+```{r compareGenera, echo=F, results='hide', warning=F}
+genera <- read.table('data/fit.final.tx.1.subsample.shared', header=T)
+num_seqs <- sum(genera[3,4:ncol(genera)])
+
+stool_genera <- genera[-grep('fit',genera$Group), grep('Otu[0-9]',colnames(genera))]
+stool_gen_avg <- apply(stool_genera, 2, mean)/num_seqs + 1e-6
+
+fit_genera <- genera[grep('fit',genera$Group), grep('Otu[0-9]',colnames(genera))]
+fit_gen_avg <- apply(fit_genera, 2, mean)/num_seqs + 1e-6
+
+fit_gen_avg <- fit_gen_avg[order(stool_gen_avg, decreasing=T)]
+stool_gen_avg <- sort(stool_gen_avg, decreasing=T)
+
+taxonomy <- read.delim('data/fit.phyla.tax', header=T, row.names=1, sep='\t')
+phyla <- taxonomy[names(fit_gen_avg),'Classification']
+levels(phyla)[table(phyla)<30] <- 'Other'
+
+png('results/figure2A.png', height=5, width=6, units='in', res=300)
+par(mar=c(4,4,1,1), mgp=c(2,0.5,0))
+plot(stool_gen_avg, fit_gen_avg, log='xy', xlim=c(1e-6,1), ylim=c(1e-6,1), yaxt='n', xaxt='n', xlab='Average relative abundance in stool (%)', ylab='Average relative abundance in FIT cartridge (%)', pch=21, bg=c('green','purple','red','blue','orange')[phyla])
+axis(1, at=c(1e-6,1e-5,1e-4,1e-3,1e-2,1e-1,1), labels=c(0,0.001,0.01,0.1,1,10,100))
+axis(2, at=c(1e-6,1e-5,1e-4,1e-3,1e-2,1e-1,1), labels=c(0,0.001,0.01,0.1,1,10,100))
+legend('bottomright', c('Bacteroidetes','Firmicutes','Proteobacteria','Actinobacteria','Other'), pch=21, pt.bg=c('red','blue','orange','purple','green'))
+dev.off()
+
+gen_corr <- cor.test(stool_gen_avg,fit_gen_avg, method='spearman')
+gen_100_corr <- cor.test(stool_gen_avg[1:100],fit_gen_avg[1:100], method='spearman')
+
+proteo_stool <- stool_genera[phyla=='Proteobacteria']
+proteo_fit <- fit_genera[phyla=='Proteobacteria']
+proteo_dif <- proteo_stool/proteo_fit
+```
+
+Next we compared the abundance of each genus between FIT cartridges and stool (Fig. 2A). There is a strong correlation between the average abundance of each genus in stool and FIT cartridges (`r sprintf('Spearman rho: %.3f, p<0.001', gen_corr$estimate)`), suggesting the abundance of bacterial genera is conserved FIT cartridges. This correlation especially strong for the 100 most abundant genera (`r sprintf('Spearman rho: %.3f, p<0.001', gen_100_corr$estimate)`). However we observed some biases in the abudance of certain taxa. In particular, the genus Pantoea was detected in `r sum(fit_genera$Otu127>0)` out of 404 FIT cartridges with an average abundance of `r sprintf('%.1f%%', fit_gen_avg['Otu127']*100)`, but was only detected in `r sum(stool_genera$Otu139>0)` stool sample. The genus Helicobacter was detected in `r sum(fit_genera$Otu032>0)` FIT cartrdges, but only `r sum(stool_genera$Otu032>0)` stool samples. Likewise several genera of Actinobacteria were more abundant in stool samples compared to FIT. Notwithstanding these few exceptions, the abundance of the vast majority of genera were well conserved between stool and FIT cartridges. 
+
+
+```{r otu_scatter, echo=F, cache=T, results='hide', warning=F}
+stool_shared<-shared[meta$type=='stool',]
+fit_shared<-shared[meta$type=='fit',]
+
+
+otus <- c('Otu000202','Otu000070','Otu000548','Otu000393')
+taxa <- c('Fusobacterium nucleatum (OTU202)','Porphyromonas asaccharolytica (OTU70)','Peptostreptococcus stomatis (OTU548)','Parvimonas micra (OTU393)')
+
+#OTU Scatterplots
+stool_abunds <- stool_shared[,otus]/3879 + 0.0001
+fit_abunds <- fit_shared[,otus]/3879 + 0.0001
+
+png('results/figure2B.png', width=9, height=8, units='in', res=300)
+layout(matrix(c(1,2,3,4),nrow=2, byrow=T))
+par(mar=c(1.5,1.5,2.5,1),oma=c(3,3,1,1), yaxs='r', xaxs='r')
+for(i in 1:length(otus)){
+  plot(log10(jitter(stool_abunds[,otus[i]], amount=0.00002)), log10(jitter(fit_abunds[,otus[i]], amount=0.00002)), xaxt='n', yaxt='n', ylab='', xlab='', pch=21, cex=1.5, bg=c('orange','red','royalblue1')[meta$dx], main=taxa[i], xlim=c(-4,-0.5), ylim=c(-4,-0.5))
+  axis(1, at=c(-4,-3,-2,-1), labels=c(0,0.1,1,10) )
+  axis(2, at=c(-4,-3,-2,-1), labels=c(0,0.1,1,10) )
+  p <- cor.test(stool_shared[,otus[i]], fit_shared[,otus[i]], method='spearman')$p.value
+  if(p<0.001){legend('topleft', 'p<0.001', bty='n')}
+  else{legend('topleft', sprintf('p=%.1g',cor.test(stool_shared[,otus[i]], fit_shared[,otus[i]], method='spearman')$p.value), bty='n')}
+}
+legend('bottomright', legend=c('Normal','Adenoma','Camcer'), pch=21, pt.cex=1.5, pt.bg=c('royalblue1', 'orange','red'))
+
+layout(matrix(c(1,1),nrow=1))
+mtext('B', at=par("usr")[1]-0.4, side=3, line=2, font=2)
+mtext('Relative abundance in stool (%)', side=1, line=3)
+mtext('Relative abundance in FIT cartridge (%)', side=2, line=3)
+dev.off()
+
+```
+ 
+
+Moreso than bacterial genera, the abundance individuals species used as biomarkers must be conserved for FIT cartridges to be a viable alternative to stool. Several bacterial species have been repeatedly associated with CRC, including _Fusobacterium nucleatum_, _Porphyromonas asaccharolytica_, _Peptostreptococcus stomatis_, and _Parvimonas micra_ [@warren2013co;@zeller2014potential;@yu2015metagenomic;@baxter2016microbiota]. We identified the OTUs associated with each of these species, then compared their abundances in stool and FIT cartridges (Fig. 2B). As expected, their abundance in stool was significantly correlated with their abundance in matched FIT cartridges (all p<0.001). Therefore, bacterial biomarkers of CRC are conserved between stool and FIT cartridges.
+
+
+```{r compare_models, echo=F, cache=T, warning=F, message=F, results='hide', fig.height=4, fig.width=8}
+
+stool_data<-merge(meta, stool_shared, by.x='sample',by.y='Group')
+fit_data<-merge(meta, fit_shared, by.x='sample',by.y='Group')
+stool_data <- stool_data[,c('lesion','fit_result',colnames(stool_data)[grep('Otu[0123456789]', colnames(stool_data))])]
+fit_data <- fit_data[,c('lesion','fit_result',colnames(stool_data)[grep('Otu[0123456789]', colnames(stool_data))])]
+dx <- meta$dx[1:404]
+
+### Lesion vs Normal models (with FIT result)
+set.seed(021316)
+fit_les_model <- AUCRF(lesion~., data=fit_data, pdel=0.05, ntree=500, ranking='MDA')
+fit_les_probs <- predict(fit_les_model$RFopt, type='prob')[,2]
+fit_les_probs <- (fit_les_probs-0.9*min(fit_les_probs))/(1-min(fit_les_probs)) #normalization to spread out probabilities
+fit_les_roc <- roc(fit_data$lesion~fit_les_probs)
+
+set.seed(021216)
+stool_les_model <- AUCRF(lesion~., data=stool_data, pdel=0.05, ntree=500, ranking='MDA')
+stool_les_probs <- predict(stool_les_model$RFopt, type='prob')[,2]
+stool_les_probs <- (stool_les_probs-0.9*min(stool_les_probs))/(1-min(stool_les_probs)) #normalization to spread out probabilities
+stool_les_roc <- roc(stool_data$lesion~stool_les_probs)
+
+# Figure layout
+png('results/figure3.png', width=9, height=8, units='in', res=300)
+layout(matrix(c(3,1,4,2),nrow=2))
+par(mar=c(3,3.5,2,1), mgp=c(2,0.5,0), oma=c(0,3,0,0))
+
+### Compare ROC curves
+plot(c(1,0),c(0,1), type='l', lty=2, xlim=c(1.01,0), ylim=c(-0.01,1.01), xaxs='i', yaxs='i', ylab='Sensitivity', xlab='Specificity', las=1)
+plot(fit_les_roc, add=T, lwd=2, col='purple', lty=1)
+plot(stool_les_roc, add=T, lwd=2, col='green3', lty=1)
+legend('bottomright', c(sprintf('FIT cartridge: AUC=%.3f',fit_les_roc$auc),sprintf('stool: AUC=%.3f',stool_les_roc$auc)), lwd=2, col=c('purple','green3'), bty='n', lty=c(1,2))
+mtext('C', at=1.1, side=3, line=0.1, font=2)
+
+
+### Compare model results - scatter plot
+plot(stool_les_probs,fit_les_probs, bg=c('orange','red','royalblue1')[dx], pch=21, ylab='Probability of Lesion (FIT cartridge)', xlab='Probability of Lesion (stool)', ylim=c(0,1), xlim=c(0,1), las=1)
+legend('topleft', c('Cancer','Adenoma','Normal'), pch=21, pt.bg=c('red','orange','royalblue1'))
+mtext('D', at=-0.1, side=3, line=0.1, font=2)
+
+
+### Cancer vs normal models (no FIT result)
+stool_data <- stool_data[dx!='adenoma',-2]
+fit_data <- fit_data[dx!='adenoma',-2]
+
+set.seed(021316)
+fit_canc_model <- AUCRF(lesion~., data=fit_data, pdel=0.05, ntree=500, ranking='MDA')
+fit_canc_probs <- predict(fit_canc_model$RFopt, type='prob')[,2]
+fit_canc_roc <- roc(fit_data$lesion~fit_canc_probs)
+
+set.seed(021216)
+stool_canc_model <- AUCRF(lesion~., data=stool_data, pdel=0.05, ntree=500, ranking='MDA')
+stool_canc_probs <- predict(stool_canc_model$RFopt, type='prob')[,2]
+stool_canc_roc <- roc(stool_data$lesion~stool_canc_probs)
+
+### Compare ROC curves
+plot(c(1,0),c(0,1), type='l', lty=2, xlim=c(1.01,0), ylim=c(-0.01,1.01), xaxs='i', yaxs='i', ylab='Sensitivity', xlab='Specificity', las=1)
+plot(fit_canc_roc, add=T, lwd=2, col='purple', lty=1)
+plot(stool_canc_roc, add=T, lwd=2, col='green3', lty=1)
+legend('bottomright', c(sprintf('FIT cartridge: AUC=%.3f',fit_canc_roc$auc),sprintf('stool: AUC=%.3f',stool_canc_roc$auc)), lwd=2, col=c('purple','green3'), bty='n', lty=c(1,2))
+mtext('A', at=1.1, side=3, line=0.1, font=2)
+
+### Compare model results - scatter plot
+plot(stool_canc_probs,fit_canc_probs, bg=c('royalblue1','red')[stool_data$lesion], pch=21, ylab='Probability of Lesion (FIT cartridge)', xlab='Probability of Lesion (stool)', ylim=c(0,1), xlim=c(0,1), las=1)
+legend('topleft', c('Cancer','Normal'), pch=21, pt.bg=c('red','royalblue1'))
+mtext('B', at=-0.1, side=3, line=0.1, font=2)
+
+mtext('Cancer vs. Normal\n(microbiota only)', las=0, side=2, at=0.77, outer=T, adj=0.5, line=0.5, font=2, cex=0.8)
+mtext('Any lesion vs. Normal\n(microbiota + hemoglobin)', las=0, side=2, at=0.27, outer=T, adj=0.5, line=0.5, font=2, cex=0.8)
+
+dev.off()
+
+```
+
+
+Next we tested whether bacterial abundances from FIT cartridges could be used to differentiate healthy patients from those with CRC, as has been demonstrated with stool. First we generated random forest models for differentiating healthy individuals from those with carcinomas based on the abundance of bacterial populations from stool or from FIT cartridges. The AUC-RF algorithm was used to determine the optimal selection of OTUs for each model, based on maximizing the area under the curve (AUC) of a reciever operator characteristic (ROC) curve. The optmial model based on DNA from stool utilized `r stool_canc_model$Kopt` OTUs and had an AUC of `r round(stool_canc_roc$auc, 3)`. There was no significant difference in AUC for the model based on DNA from FIT cartridges, which used `r fit_canc_model$Kopt` OTUs and had an AUC of `r round(fit_canc_roc$auc, 3)` (`r sprintf('p=%.2f', roc.test(fit_canc_roc, stool_canc_roc)$p.value)`). Therefore bacterial DNA from FIT cartridges can is just as predictive as DNA isolated directly from stool.
+
+When screening for CRC it is important to detect adenomas in addition to carcinomas. Unfortunately the gut microbiota, like FIT, cannot reliably detect adenomas on its own. However, we have shown that combining bacterial abundances and hemoglobin concentration into a single model significantly imporoves detection of lesions, especially adenomas, over either method by itself. Therefore we generated random forest models that combined hemoglobin concentration as determined by FIT with bacterial abundance from either stool or FIT catrdiges. As with the cancer versus normal comparison above, there was no difference in AUC the model based on bacteria from stool and the model based on bacteria from FIT cartridge. Again, this shows that bacterial DNA isolated from FIT cartridges can be used in place of stool for detecting colonic lesions based on the microbiota.
+
+
+###Discussion
+In this study we demonstrated that bacterial DNA isolated from FIT cartridges recapitulates the community structure and membership of patients' stool microbiota. FIT/stool pairs were significantly more similar within an individual than between individuals, and the interindividual differences in stool microbiota structure were conserved in FIT cartridge-derived microbiota.  Furthermore, FIT cartridge-derived and stool-derived bacterial DNA were equally predictive for differentiating healthy individuals from those with CRC. Finally, hemoglobin concentrations determined by FIT could be combined with microbiota from FIT cartridges to improve the sensitivity for detecting cancer.
+
+The lower biomass of FIT cartridge buffer compared to stool does increase the risk of results being influenced by contaminants. For example, an OTU associated with Pantoea was found in all FIT cartridge samples and only ## stool samples. This may have been due to reagent contamination that was at a low enough concentration  to be undetectable in DNA from stool samples, but high enough to become apparent in the lower biomass FIT cartridges. Alternatively storage conditions could have played a role in biasing certain genera. FIT cartridges spent more time at or near room temperature so that they could be analyzed for hemoglobin concentration. Therefore its possible that certain species were able to grow, shifting their abundance relative to stool. Any biases were limitted to a small number of genera and had no apprent impact on the ability to detect CRC from FIT cartridged-derived DNA.
+
+These findings demonstrate the potential for using DNA from FIT cartridges for microbiota-based screening. This could eliminate the need to collect and process separate stool samples, reducing the cost of screening. Furthermore, annual FIT cartridges could be used to moniter changes to a patients microbiota over time, making it possible to detect any shifts toward a disease-associated microbiome. It would also be possible to use FIT cartridges, rather than separate stool samples, for future studies on the role of the gut microbiota and CRC. Since FIT cartridges are already collected for CRC screening, it may be easier to recruit patients for large-scale validations of microbiota-based screening methods.
+
+  
+###Figures  
+
+![](results/figure1.png)
+
+**Figure 1. Bacterial community structure from FIT cartridge recapitulates stool.** Density plots showing distribution of the number of shared OTUs (A) and community similarity (B) between groups of samples (* p<0.001 two-sample Kolmogorov-Smirnov Test).
+
+![](results/figure2A.png)
+![](results/figure2B.png)
+**Figure 2. Bacterial populations conserved between stool and FIT cartridge.**  (A) Scatterplot of the average relative abundance of each bacterial genus in stool and FIT cartridges. (B) Scatterplots of relative abundances of 4 OTUs frequently associated with CRC.
+
+![](results/figure3.png)
+**Figure 3. Microbiota-based models from FIT cartridge DNA are as predictive as models from stool.** (A) ROC curves for distinguishing healthy patients from those with cancer using using microbiota-based random forest models from FIT cartridge DNA or stool. (B) Probability of having cancer for each patient according to microbiota-based models from stool or FIT cartridges. (C) ROC curves for distinguishing patients with adenomas or carcinomas from healthy patients using both hemoglobin concentration and microbiota from either stool or FIT cartrdges. (D) Probability of having a lesion for each patient based on the models from C.
+
+
+###References (≤25 references)
+

@@ -1,0 +1,3 @@
+set.dir(input=scratch/, output=scratch/)
+cluster.split(fasta=fit.final.fasta, count=fit.final.counts, taxonomy=fit.final.taxonomy, splitmethod=classify, taxlevel=5, cutoff=0.1, processors=8, cluster=F)
+
