@@ -5,3 +5,5 @@
 *.Rdata
 *_cache
 *_files
+*_files/*
+*_cache/*
