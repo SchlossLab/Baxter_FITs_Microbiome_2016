@@ -1,0 +1,6 @@
+/scratch/*
+/data/fastqs/*
+/data/*.fasta
+*.logfile
+*.Rdata
+*_cache
