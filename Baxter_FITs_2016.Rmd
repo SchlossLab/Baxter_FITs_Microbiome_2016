@@ -81,7 +81,7 @@ fit2fit <- 1-as.numeric(fit2fit[upper.tri(fit2fit, diag=F)])
 stool2fit <- 1-as.numeric(as.vector(unlist(dist[stools,fits])))
 
 
-png('results/figure1.png', width=9, height=4.5, units='in', res=300)
+tiff('results/figure1.tiff', width=9, height=4.5, units='in', res=300)
 layout(matrix(c(2,1), nrow=1), widths=c(1,1.05))
 par(mar=c(4,3.5,2,0.5), mgp=c(2,0.5,0), oma=c(0,0,0,0))
 plot(density(pairs), type='l',lwd=3, col='red', ylim=c(0,4), xlab='Community Similarity (1-thetaYC)', main='', las=1, tck=-0.02)
@@ -151,7 +151,7 @@ taxonomy <- read.delim('data/fit.phyla.tax', header=T, row.names=1, sep='\t')
 phyla <- taxonomy[names(fit_gen_avg),'Classification']
 levels(phyla)[table(phyla)<30] <- 'Other'
 
-png('results/figure2A.png', height=5, width=6, units='in', res=300)
+tiff('results/figure2A.tiff', height=5, width=6, units='in', res=300)
 par(mar=c(4,4,1,1), mgp=c(2,0.5,0))
 plot(stool_gen_avg, fit_gen_avg, log='xy', xlim=c(1e-6,1), ylim=c(1e-6,1), yaxt='n', xaxt='n', xlab='Average relative abundance in stool (%)', ylab='Average relative abundance in FIT cartridge (%)', pch=21, bg=c('green','purple','red','blue','orange')[phyla])
 axis(1, at=c(1e-6,1e-5,1e-4,1e-3,1e-2,1e-1,1), labels=c(0,0.001,0.01,0.1,1,10,100))
@@ -180,7 +180,7 @@ taxa <- c('Fusobacterium nucleatum (OTU202)','Porphyromonas asaccharolytica (OTU
 stool_abunds <- stool_shared[,otus]/3879 + 0.0001
 fit_abunds <- fit_shared[,otus]/3879 + 0.0001
 
-png('results/figure2B.png', width=9, height=8, units='in', res=300)
+tiff('results/figure2B.tiff', width=9, height=8, units='in', res=300)
 layout(matrix(c(1,2,3,4),nrow=2, byrow=T))
 par(mar=c(1.5,1.5,2.5,1),oma=c(3,3,1,1), yaxs='r', xaxs='r')
 for(i in 1:length(otus)){
@@ -227,7 +227,7 @@ stool_les_probs <- (stool_les_probs-0.9*min(stool_les_probs))/(1-min(stool_les_p
 stool_les_roc <- roc(stool_data$lesion~stool_les_probs)
 
 # Figure layout
-png('results/figure3.png', width=9, height=8, units='in', res=300)
+tiff('results/figure3.tiff', width=9, height=8, units='in', res=300)
 layout(matrix(c(3,1,4,2),nrow=2))
 par(mar=c(3,3.5,2,1), mgp=c(2,0.5,0), oma=c(0,3,0,0))
 
@@ -295,15 +295,15 @@ These findings demonstrate the potential for using DNA extracted from FIT cartri
   
 ###Figures  
 
-![](results/figure1.png)
+![](results/figure1.tiff)
 
 **Figure 1. Bacterial community structure from FIT cartridge recapitulates stool.** Density plots showing distribution of the number of shared OTUs (A) and community similarity (B) between groups of samples (* p<0.001 two-sample Kolmogorov-Smirnov Test).
 
-![](results/figure2A.png)
-![](results/figure2B.png)
+![](results/figure2A.tiff)
+![](results/figure2B.tiff)
 **Figure 2. Bacterial populations conserved between stool and FIT cartridge.**  (A) Scatterplot of the average relative abundance of each bacterial genus in stool and FIT cartridges. (B) Scatterplots of relative abundances of 4 OTUs frequently associated with CRC.
 
-![](results/figure3.png)
+![](results/figure3.tiff)
 **Figure 3. Microbiota-based models from FIT cartridge DNA are as predictive as models from stool.** (A) ROC curves for distinguishing healthy patients from those with cancer using using microbiota-based random forest models from FIT cartridge DNA or stool. (B) Probability of having cancer for each patient according to microbiota-based models from stool or FIT cartridges. (C) ROC curves for distinguishing patients with adenomas or carcinomas from healthy patients using both hemoglobin concentration and microbiota from either stool or FIT cartrdges. (D) Probability of having a lesion for each patient based on the models from C.
 
 

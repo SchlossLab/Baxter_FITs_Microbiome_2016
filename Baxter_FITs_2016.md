@@ -67,15 +67,15 @@ These findings demonstrate the potential for using DNA extracted from FIT cartri
   
 ###Figures  
 
-![](results/figure1.png)
+![](results/figure1.tiff)
 
 **Figure 1. Bacterial community structure from FIT cartridge recapitulates stool.** Density plots showing distribution of the number of shared OTUs (A) and community similarity (B) between groups of samples (* p<0.001 two-sample Kolmogorov-Smirnov Test).
 
-![](results/figure2A.png)
-![](results/figure2B.png)
+![](results/figure2A.tiff)
+![](results/figure2B.tiff)
 **Figure 2. Bacterial populations conserved between stool and FIT cartridge.**  (A) Scatterplot of the average relative abundance of each bacterial genus in stool and FIT cartridges. (B) Scatterplots of relative abundances of 4 OTUs frequently associated with CRC.
 
-![](results/figure3.png)
+![](results/figure3.tiff)
 **Figure 3. Microbiota-based models from FIT cartridge DNA are as predictive as models from stool.** (A) ROC curves for distinguishing healthy patients from those with cancer using using microbiota-based random forest models from FIT cartridge DNA or stool. (B) Probability of having cancer for each patient according to microbiota-based models from stool or FIT cartridges. (C) ROC curves for distinguishing patients with adenomas or carcinomas from healthy patients using both hemoglobin concentration and microbiota from either stool or FIT cartrdges. (D) Probability of having a lesion for each patient based on the models from C.
 
 
