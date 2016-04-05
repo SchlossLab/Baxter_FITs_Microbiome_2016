@@ -42,9 +42,6 @@ We tested whether the bacterial community profiles from FIT cartridges recapitul
 
 
 
-
-
-
 Next, we compared the abundance of each genus in the FIT cartridges and stool (Fig. 2A). There was a strong correlation between the average abundance of each genus in stool and FIT cartridges (Spearman rho: 0.699, p<0.001), suggesting the abundance of bacterial genera was conserved. This correlation was especially strong for the 100 most abundant genera (Spearman rho: 0.886, p<0.001). Several bacterial species have been repeatedly associated with CRC, including _Fusobacterium nucleatum_, _Porphyromonas asaccharolytica_, _Peptostreptococcus stomatis_, and _Parvimonas micra_ [@warren2013co;@zeller2014potential;@yu2015metagenomic;@baxter2016microbiota].  As expected, the abundance of OTUs associated with these species in stool was significantly correlated with their abundance in matched FIT cartridges (all p<0.001)(Fig. 2B). We observed some biases in the abudance of certain taxa. In particular, the genus Pantoea was detected in 399 out of 404 FIT cartridges with an average abundance of 2.4%, but was only detected in 34 stool samples. The genus Helicobacter was detected in 172 FIT cartrdges, but only 10 stool samples. Likewise several genera of Actinobacteria were more abundant in stool samples compared to FIT. Notwithstanding these few exceptions, the abundance of the vast majority of genera were well conserved between stool and FIT cartridges.
 
 
@@ -54,7 +51,7 @@ Next, we compared the abundance of each genus in the FIT cartridges and stool (F
 We tested whether the bacterial relative abundances we observed in from FIT cartridges could be used to differentiate healthy patients from those with carcinomas using random forest models, as has been demonstrated with stool [@reference]. Using DNA from the FIT cartridge, the optimal model utilized 32 OTUs and had an AUC of 0.853. There was no significant difference in the AUC for this model and the model based on DNA isolated directly from stool, which used 28 OTUs and had an AUC of 0.831 (p=0.41). This demonstrated that models based on bacterial DNA from FIT cartridges could be as predictive as DNA isolated directly from stool.
 
 
-When screening for CRC it is important to detect adenomas in addition to carcinomas. Unfortunately the gut microbiota, like FIT, cannot reliably detect adenomas on its own. However, we have shown that combining bacterial abundances and hemoglobin concentration into a single model significantly imporoves detection of lesions, especially adenomas, over either method by itself. Therefore we generated random forest models that combined hemoglobin concentration as determined by FIT with bacterial abundance from either stool or FIT catrdiges. As with the cancer versus normal comparison above, there was no difference in AUC the model based on bacteria from stool and the model based on bacteria from FIT cartridge. Again, this shows that bacterial DNA isolated from FIT cartridges can be used in place of stool for detecting colonic lesions based on the microbiota.
+When screening for CRC it is important to detect adenomas in addition to carcinomas. Unfortunately the gut microbiota, like FIT, cannot reliably detect adenomas on its own. However, we have shown that combining bacterial abundances and hemoglobin concentration into a single model significantly imporoves detection of lesions, especially adenomas, over either method by itself. Therefore we generated random forest models that combined hemoglobin concentration as determined by FIT with bacterial abundance from either stool or FIT catridges. As with the cancer versus normal comparison above, there was no difference in AUC the model based on bacteria from stool and the model based on bacteria from FIT cartridge. Again, this shows that bacterial DNA isolated from FIT cartridges can be used in place of stool for detecting colonic lesions based on the microbiota.
 
 
 ###Discussion
@@ -71,12 +68,13 @@ These findings demonstrate the potential for using DNA extracted from FIT cartri
 
 **Figure 1. Bacterial community structure from FIT cartridge recapitulates stool.** Density plots showing distribution of the number of shared OTUs (A) and community similarity (B) between groups of samples (* p<0.001 two-sample Kolmogorov-Smirnov Test).
 
-![](results/figure2A.tiff)
-![](results/figure2B.tiff)
+![](results/figure2.tiff)  
+
 **Figure 2. Bacterial populations conserved between stool and FIT cartridge.**  (A) Scatterplot of the average relative abundance of each bacterial genus in stool and FIT cartridges. (B) Scatterplots of relative abundances of 4 OTUs frequently associated with CRC.
 
 ![](results/figure3.tiff)
 **Figure 3. Microbiota-based models from FIT cartridge DNA are as predictive as models from stool.** (A) ROC curves for distinguishing healthy patients from those with cancer using using microbiota-based random forest models from FIT cartridge DNA or stool. (B) Probability of having cancer for each patient according to microbiota-based models from stool or FIT cartridges. (C) ROC curves for distinguishing patients with adenomas or carcinomas from healthy patients using both hemoglobin concentration and microbiota from either stool or FIT cartrdges. (D) Probability of having a lesion for each patient based on the models from C.
+
 
 
 ###References (≤25 references)

@@ -151,13 +151,19 @@ taxonomy <- read.delim('data/fit.phyla.tax', header=T, row.names=1, sep='\t')
 phyla <- taxonomy[names(fit_gen_avg),'Classification']
 levels(phyla)[table(phyla)<30] <- 'Other'
 
-tiff('results/figure2A.tiff', height=5, width=6, units='in', res=300)
-par(mar=c(4,4,1,1), mgp=c(2,0.5,0))
-plot(stool_gen_avg, fit_gen_avg, log='xy', xlim=c(1e-6,1), ylim=c(1e-6,1), yaxt='n', xaxt='n', xlab='Average relative abundance in stool (%)', ylab='Average relative abundance in FIT cartridge (%)', pch=21, bg=c('green','purple','red','blue','orange')[phyla])
+tiff('results/figure2.tiff', height=5, width=11, units='in', res=300)
+layout(matrix(c(1,1,1,1,2,4,3,5),nrow=2))
+par(mar=c(2,3,1,2), mgp=c(2,0.5,0), oma=c(2,1,1,1), xpd=T)
+plot(stool_gen_avg, fit_gen_avg, log='xy', xlim=c(1e-6,1), ylim=c(1e-6,1), yaxt='n', xaxt='n', pch=21, bg=c('green','purple','red','blue','orange')[phyla], ylab='', xlab='', cex=1.3)
 axis(1, at=c(1e-6,1e-5,1e-4,1e-3,1e-2,1e-1,1), labels=c(0,0.001,0.01,0.1,1,10,100))
 axis(2, at=c(1e-6,1e-5,1e-4,1e-3,1e-2,1e-1,1), labels=c(0,0.001,0.01,0.1,1,10,100))
-legend('bottomright', c('Bacteroidetes','Firmicutes','Proteobacteria','Actinobacteria','Other'), pch=21, pt.bg=c('red','blue','orange','purple','green'))
-dev.off()
+legend('bottomright', c('Bacteroidetes','Firmicutes','Proteobacteria','Actinobacteria','Other'), pch=21, pt.bg=c('red','blue','orange','purple','green'), pt.cex=1.3)
+
+mtext('A', at=3e-7, side=3, line=0, font=2)
+mtext('Average relative abundance in stool (%)', side=1, line=2, cex=0.8)
+mtext('Average relative abundance in FIT cartridge (%)', side=2, line=2, cex=0.8)
+mtext('B', side=3, line=0, at=5, font=2)
+
 
 gen_corr <- cor.test(stool_gen_avg,fit_gen_avg, method='spearman')
 gen_100_corr <- cor.test(stool_gen_avg[1:100],fit_gen_avg[1:100], method='spearman')
@@ -165,10 +171,9 @@ gen_100_corr <- cor.test(stool_gen_avg[1:100],fit_gen_avg[1:100], method='spearm
 proteo_stool <- stool_genera[phyla=='Proteobacteria']
 proteo_fit <- fit_genera[phyla=='Proteobacteria']
 proteo_dif <- proteo_stool/proteo_fit
-```
 
 
-```{r otu_scatter, echo=F, cache=T, results='hide', warning=F}
+# Figure 2B: OTU Scatterplots
 stool_shared<-shared[meta$type=='stool',]
 fit_shared<-shared[meta$type=='fit',]
 
@@ -176,27 +181,25 @@ fit_shared<-shared[meta$type=='fit',]
 otus <- c('Otu000202','Otu000070','Otu000548','Otu000393')
 taxa <- c('Fusobacterium nucleatum (OTU202)','Porphyromonas asaccharolytica (OTU70)','Peptostreptococcus stomatis (OTU548)','Parvimonas micra (OTU393)')
 
-#OTU Scatterplots
 stool_abunds <- stool_shared[,otus]/3879 + 0.0001
 fit_abunds <- fit_shared[,otus]/3879 + 0.0001
 
-tiff('results/figure2B.tiff', width=9, height=8, units='in', res=300)
-layout(matrix(c(1,2,3,4),nrow=2, byrow=T))
-par(mar=c(1.5,1.5,2.5,1),oma=c(3,3,1,1), yaxs='r', xaxs='r')
+par(mar=c(2,2,1,0.5), mgp=c(2,0.5,0))
 for(i in 1:length(otus)){
-  plot(log10(jitter(stool_abunds[,otus[i]], amount=0.00002)), log10(jitter(fit_abunds[,otus[i]], amount=0.00002)), xaxt='n', yaxt='n', ylab='', xlab='', pch=21, cex=1.5, bg=c('orange','red','royalblue1')[meta$dx], main=taxa[i], xlim=c(-4,-0.5), ylim=c(-4,-0.5))
+  plot(log10(jitter(stool_abunds[,otus[i]], amount=0.00002)), log10(jitter(fit_abunds[,otus[i]], amount=0.00002)), xaxt='n', yaxt='n', ylab='', xlab='', pch=21, cex=1, bg=c('orange','red','royalblue1')[meta$dx], main=taxa[i], cex.main=1, xlim=c(-4,-0.5), ylim=c(-4,-0.5))
   axis(1, at=c(-4,-3,-2,-1), labels=c(0,0.1,1,10) )
   axis(2, at=c(-4,-3,-2,-1), labels=c(0,0.1,1,10) )
   p <- cor.test(stool_shared[,otus[i]], fit_shared[,otus[i]], method='spearman')$p.value
   if(p<0.001){legend('topleft', 'p<0.001', bty='n')}
   else{legend('topleft', sprintf('p=%.1g',cor.test(stool_shared[,otus[i]], fit_shared[,otus[i]], method='spearman')$p.value), bty='n')}
 }
-legend('bottomright', legend=c('Normal','Adenoma','Camcer'), pch=21, pt.cex=1.5, pt.bg=c('royalblue1', 'orange','red'))
+legend('bottomright', legend=c('Normal','Adenoma','Camcer'), pch=21, pt.cex=1, pt.bg=c('royalblue1', 'orange','red'))
 
-layout(matrix(c(1,1),nrow=1))
-mtext('B', at=par("usr")[1]-0.4, side=3, line=2, font=2)
-mtext('Relative abundance in stool (%)', side=1, line=3)
-mtext('Relative abundance in FIT cartridge (%)', side=2, line=3)
+
+mtext('Relative abundance in stool (%)', side=1, at=0.75 ,line=0, outer=T, cex=0.8)
+mtext('Relative abundance in FIT cartridge (%)', side=2, line=-40.5, outer=T, cex=0.8)
+
+
 dev.off()
 
 ```
@@ -282,7 +285,7 @@ dev.off()
 We tested whether the bacterial relative abundances we observed in from FIT cartridges could be used to differentiate healthy patients from those with carcinomas using random forest models, as has been demonstrated with stool [@reference]. Using DNA from the FIT cartridge, the optimal model utilized `r stool_canc_model$Kopt` OTUs and had an AUC of `r round(stool_canc_roc$auc, 3)`. There was no significant difference in the AUC for this model and the model based on DNA isolated directly from stool, which used `r fit_canc_model$Kopt` OTUs and had an AUC of `r round(fit_canc_roc$auc, 3)` (`r sprintf('p=%.2f', roc.test(fit_canc_roc, stool_canc_roc)$p.value)`). This demonstrated that models based on bacterial DNA from FIT cartridges could be as predictive as DNA isolated directly from stool.
 
 
-When screening for CRC it is important to detect adenomas in addition to carcinomas. Unfortunately the gut microbiota, like FIT, cannot reliably detect adenomas on its own. However, we have shown that combining bacterial abundances and hemoglobin concentration into a single model significantly imporoves detection of lesions, especially adenomas, over either method by itself. Therefore we generated random forest models that combined hemoglobin concentration as determined by FIT with bacterial abundance from either stool or FIT catrdiges. As with the cancer versus normal comparison above, there was no difference in AUC the model based on bacteria from stool and the model based on bacteria from FIT cartridge. Again, this shows that bacterial DNA isolated from FIT cartridges can be used in place of stool for detecting colonic lesions based on the microbiota.
+When screening for CRC it is important to detect adenomas in addition to carcinomas. Unfortunately the gut microbiota, like FIT, cannot reliably detect adenomas on its own. However, we have shown that combining bacterial abundances and hemoglobin concentration into a single model significantly imporoves detection of lesions, especially adenomas, over either method by itself. Therefore we generated random forest models that combined hemoglobin concentration as determined by FIT with bacterial abundance from either stool or FIT catridges. As with the cancer versus normal comparison above, there was no difference in AUC the model based on bacteria from stool and the model based on bacteria from FIT cartridge. Again, this shows that bacterial DNA isolated from FIT cartridges can be used in place of stool for detecting colonic lesions based on the microbiota.
 
 
 ###Discussion
@@ -299,12 +302,13 @@ These findings demonstrate the potential for using DNA extracted from FIT cartri
 
 **Figure 1. Bacterial community structure from FIT cartridge recapitulates stool.** Density plots showing distribution of the number of shared OTUs (A) and community similarity (B) between groups of samples (* p<0.001 two-sample Kolmogorov-Smirnov Test).
 
-![](results/figure2A.tiff)
-![](results/figure2B.tiff)
+![](results/figure2.tiff)  
+
 **Figure 2. Bacterial populations conserved between stool and FIT cartridge.**  (A) Scatterplot of the average relative abundance of each bacterial genus in stool and FIT cartridges. (B) Scatterplots of relative abundances of 4 OTUs frequently associated with CRC.
 
 ![](results/figure3.tiff)
 **Figure 3. Microbiota-based models from FIT cartridge DNA are as predictive as models from stool.** (A) ROC curves for distinguishing healthy patients from those with cancer using using microbiota-based random forest models from FIT cartridge DNA or stool. (B) Probability of having cancer for each patient according to microbiota-based models from stool or FIT cartridges. (C) ROC curves for distinguishing patients with adenomas or carcinomas from healthy patients using both hemoglobin concentration and microbiota from either stool or FIT cartrdges. (D) Probability of having a lesion for each patient based on the models from C.
+
 
 
 ###References (≤25 references)
