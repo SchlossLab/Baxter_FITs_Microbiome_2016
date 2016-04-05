@@ -135,7 +135,7 @@ python code/trimTax.py data/fit.final.an.unique_list.0.03.cons.taxonomy data/fit
 ```
 
 
-```{r compareGenera, echo=F, results='hide', warning=F, chache=T}
+```{r compareGenera, echo=F, results='hide', warning=F, cache=T}
 genera <- read.table('data/fit.final.tx.1.subsample.shared', header=T)
 num_seqs <- sum(genera[3,4:ncol(genera)])
 
