@@ -19,7 +19,7 @@ bibliography: references.bibtex
 ^\*^Corresponding author: pschloss@umich.edu
 
 ```{r startup, echo=F, message=F, warning=F}
-deps = c("rmarkdown","AUCRF","pROC");
+deps <- c("rmarkdown","AUCRF","pROC");
 for (dep in deps){
   if (dep %in% installed.packages()[,"Package"] == FALSE){
     install.packages(as.character(dep), quiet=TRUE);
@@ -41,7 +41,7 @@ meta$lesion <- as.factor(meta$lesion)
 
 
 ###Abstract  
-(≤ 250 words, unstructured)
+There is an urgent need for colorectal cancer (CRC) screening methods that are noninvasive, inexpensive, and capable of accurately detecting early stage tumors. It has been shown that models based on the gut microbiota can complement existing screening methods like the fecal occult blood test and fecal immunochemical test (FIT). However, a barrier for microbiota-based screening is the need to collect and store patients' stool samples. Using samples from 404 patients we tested whether the residual buffer from FIT cartridges could be used in place of stool samples for microbiota characterization. We found that the bacterial DNA isolated from FIT cartridges recapitulated the community structure and membership of patients' stool microbiota and that the abundance of bacteria associated with CRC were conserved. We also found that models for detecting CRC that were generated using bacterial abundances from FIT cartridges were equally predictive as models generated using bacterial abundances from stool. These findings demonstrate the potential for using FIT cartridges in place of stool for microbiota-based screening for CRC or other microbiome-associated diseases. Using FIT cartridges could facilitate combining hemoglobin quantification and microbiota characterization into a single test. Additionally, FIT cartridges could provide a new source of data for studying the role of the microbiome in CRC or other diseases. 
 
 
 ###Introduction  
@@ -249,8 +249,8 @@ legend('topleft', c('Cancer','Adenoma','Normal'), pch=21, pt.bg=c('red','orange'
 mtext('D', at=-0.1, side=3, line=0.1, font=2)
 
 ### Cancer vs normal models 
-stool_data <- stool_data[dx!='adenoma',-2]
-fit_data <- fit_data[dx!='adenoma',-2]
+stool_data <- stool_data[dx!='adenoma',]
+fit_data <- fit_data[dx!='adenoma',]
 
 set.seed(021316)
 fit_canc_model <- AUCRF(lesion~., data=fit_data, pdel=0.05, ntree=500, ranking='MDA')
@@ -266,7 +266,7 @@ stool_canc_roc <- roc(stool_data$lesion~stool_canc_probs)
 plot(c(1,0),c(0,1), type='l', lty=2, xlim=c(1.01,0), ylim=c(-0.01,1.01), xaxs='i', yaxs='i', ylab='Sensitivity', xlab='Specificity', las=1)
 plot(fit_canc_roc, add=T, lwd=2, col='purple', lty=1)
 plot(stool_canc_roc, add=T, lwd=2, col='green3', lty=1)
-legend('bottomright', c(sprintf('FIT cartridge: AUC=%.3f',fit_canc_roc$auc),sprintf('stool: AUC=%.3f',stool_canc_roc$auc)), lwd=2, col=c('purple','green3'), bty='n', lty=c(1,2))
+legend('bottomright', c(sprintf('FIT cartridge: AUC=%.3f',fit_canc_roc$auc),sprintf('stool: AUC=%.3f',stool_canc_roc$auc)), lwd=2, col=c('purple','green3'), bty='n', lty=1)
 mtext('A', at=1.1, side=3, line=0.1, font=2)
 
 ### Compare model results - scatter plot
@@ -284,7 +284,7 @@ canc_corr <- cor.test(fit_canc_probs,stool_canc_probs, method='spearman')
 ```
 
 
-We tested whether the bacterial relative abundances we observed from FIT cartridges could be used to differentiate healthy patients from those with carcinomas using random forest models, as has been demonstrated with stool [@baxter2016microbiota]. Using DNA from the FIT cartridge, the optimal model utilized `r fit_canc_model$Kopt` OTUs and had an AUC of `r sprintf('%.3f', fit_canc_roc$auc)`. There was no significant difference in the AUC for this model and the model based on DNA isolated directly from stool, which used `r stool_canc_model$Kopt` OTUs and had an AUC of `r sprintf('%.3f',stool_canc_roc$auc)` (`r sprintf('p=%.2f', roc.test(fit_canc_roc, stool_canc_roc)$p.value)`). Furthermore, the probabilities of individuals having lesions according to the model from stool was correlated with probabilities determined by the model from FIT cartridges (`r sprintf('Spearman rho: %.3f, p<0.001', canc_corr$estimate)`, Fig. 3B). We also generated random forest models for differentiating healthy patients from those with any type of lesions (i.e. adenoma or carcinoma). There was no difference in AUC between the stool-based model with `r stool_les_model$Kopt` OTUs (AUC=`r sprintf('%.3f', stool_les_roc$auc)`) and the FIT cartridge-based model with `r fit_les_model$Kopt` OTUs (AUC=`r sprintf('%.3f', fit_les_roc$auc)`, `r sprintf('p=%.2f', roc.test(fit_les_roc,stool_les_roc)$p.value)`). Again, the probabilities of individuals having lesions according to the two models were significantly correlated (`r sprintf('Spearman rho: %.3f, p<0.001', les_corr$estimate)`, Fig. 3D). These findings demonstrated that models based on bacterial DNA from FIT cartridges could be as predictive as models based on DNA isolated directly from stool.
+We tested whether the bacterial relative abundances we observed from FIT cartridges could be used to differentiate healthy patients from those with carcinomas using random forest models, as has been demonstrated with stool [@baxter2016microbiota]. Using DNA from the FIT cartridge, the optimal model utilized `r fit_canc_model$Kopt` OTUs and had an AUC of `r sprintf('%.3f', fit_canc_roc$auc)` (Fig. 3A). There was no significant difference in the AUC for this model and the model based on DNA isolated directly from stool, which used `r stool_canc_model$Kopt` OTUs and had an AUC of `r sprintf('%.3f',stool_canc_roc$auc)` (`r sprintf('p=%.2f', roc.test(fit_canc_roc, stool_canc_roc)$p.value)`). Furthermore, the probabilities of individuals having lesions according to the model from stool was correlated with probabilities determined by the model from FIT cartridges (`r sprintf('Spearman rho: %.3f, p<0.001', canc_corr$estimate)`, Fig. 3B). We also generated random forest models for differentiating healthy patients from those with any type of lesions (i.e. adenoma or carcinoma). There was no difference in AUC between the stool-based model with `r stool_les_model$Kopt` OTUs (AUC=`r sprintf('%.3f', stool_les_roc$auc)`) and the FIT cartridge-based model with `r fit_les_model$Kopt` OTUs (AUC=`r sprintf('%.3f', fit_les_roc$auc)`, `r sprintf('p=%.2f', roc.test(fit_les_roc,stool_les_roc)$p.value)`, Fig. 3C). Again, the probabilities of individuals having lesions according to the two models were significantly correlated (`r sprintf('Spearman rho: %.3f, p<0.001', les_corr$estimate)`, Fig. 3D). These findings demonstrated that models based on bacterial DNA from FIT cartridges could be as predictive as models based on DNA isolated directly from stool.
 
 
 
