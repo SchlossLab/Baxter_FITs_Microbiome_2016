@@ -193,12 +193,14 @@ stool_abunds <- stool_shared[,otus]/3879 + 0.0001
 fit_abunds <- fit_shared[,otus]/3879 + 0.0001
 
 otu_pvals <- c() 
+otu_corrs <- c()
 par(mar=c(2,2,1.5,0.5), mgp=c(2,0.5,0))
 for(i in 1:length(otus)){
   plot(log10(jitter(stool_abunds[,otus[i]], amount=0.00002)), log10(jitter(fit_abunds[,otus[i]], amount=0.00002)), xaxt='n', yaxt='n', ylab='', xlab='', pch=21, cex=1, bg=c('orange','red','royalblue1')[meta$dx], main=taxa[i], cex.main=1, xlim=c(-4,-0.5), ylim=c(-4,-0.5))
   axis(1, at=c(-4,-3,-2,-1), labels=c(0,0.1,1,10) )
   axis(2, at=c(-4,-3,-2,-1), labels=c(0,0.1,1,10) )
   otu_pvals[i] <- cor.test(stool_shared[,otus[i]], fit_shared[,otus[i]], method='spearman')$p.value
+  otu_corrs[i] <- cor.test(stool_shared[,otus[i]], fit_shared[,otus[i]], method='spearman')$estimate
 }
 legend('bottomright', legend=c('Normal','Adenoma','Cancer'), pch=21, pt.cex=1, pt.bg=c('royalblue1', 'orange','red'))
 
@@ -307,7 +309,7 @@ These findings demonstrate the potential for using DNA extracted from FIT cartri
 **Figure 1. Bacterial community structure from FIT cartridge recapitulates stool.** Density plots showing distribution of the number of shared OTUs (A) and community similarity (B) between groups of samples (* p<0.001 two-sample Kolmogorov-Smirnov Test).
 
 ![](results/figure2.tiff)  
-**Figure 2. Bacterial populations conserved between stool and FIT cartridge.**  (A) Scatterplot of the average relative abundance of each bacterial genus in stool and FIT cartridges colored by phylum. (B) Scatterplots of the relative abundances of 4 species frequently associated with CRC. All correlations were greater than `r 'XXXXX'` (all p<0.001)
+**Figure 2. Bacterial populations conserved between stool and FIT cartridge.**  (A) Scatterplot of the average relative abundance of each bacterial genus in stool and FIT cartridges colored by phylum. (B) Scatterplots of the relative abundances of 4 species frequently associated with CRC. All correlations were greater than `r floor(min(otu_corrs)*100)/100` (all `r pval(max(otu_pvals))`)
 
 ![](results/figure3.tiff)  
 **Figure 3. Microbiota-based models from FIT cartridge DNA are as predictive as models from stool.** (A) ROC curves for distinguishing healthy patients from those with cancer using using microbiota-based random forest models using DNA from FIT cartridges or stool. (B) Probability of having cancer for each patient according to microbiota-based models A. (C) ROC curves for distinguishing patients with adenomas or carcinomas from healthy patients using microbiota-based random forest models using DNA from FIT cartridges or stool. (D) Probability of having a lesion for each patient based on the models from C.
