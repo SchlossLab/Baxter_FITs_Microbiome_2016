@@ -89,15 +89,16 @@ stool2fit <- 1-as.numeric(as.vector(unlist(dist[stools,fits])))
 
 
 tiff('results/figure1.tiff', width=9, height=4.5, units='in', res=300)
-layout(matrix(c(2,1), nrow=1), widths=c(1,1.05))
-par(mar=c(4,3.5,2,0.5), mgp=c(2,0.5,0), oma=c(0,0,0,0))
-plot(density(pairs), type='l',lwd=3, col='red', ylim=c(0,4), xlab='Community Similarity (1-thetaYC)', main='', las=1, tck=-0.02)
+layout(matrix(c(2,1), nrow=1), widths=c(1,1))
+par(mar=c(3.5,2,2,1), mgp=c(2,0.5,0), oma=c(0,0,0,0))
+plot(density(pairs), type='l',lwd=3, col='red', ylim=c(0,4), yaxt='n', xlab='Community Similarity (1-thetaYC)', main='', las=1, tck=-0.02)
 points(density(stool2stool), type='l',lwd=3, col='orange')
 points(density(fit2fit), type='l',lwd=3, col='blue')
 points(density(stool2fit), type='l',lwd=3, col='green4')
 legend('topright', c('Stool/FIT pairs','Between FITs & Stool','Between Stools','Between FITs'), col=c('red','green4','orange','blue'), lwd=3, bty='n', cex=0.8)
+mtext('Density',side=2, at=2, line=0.5)
 points(0.7,max(density(pairs)$y)*1.07, pch=8)
-mtext('B', at=-0.3, side=3, line=0.1, font=2, cex=2)
+mtext('B', at=-0.25, side=3, line=0.1, font=2, cex=2)
 
 thyc_p <- ks.test(pairs, fit2fit, alternative='less')$p.value
 
@@ -118,15 +119,15 @@ fit2fit <- as.numeric(fit2fit[upper.tri(fit2fit, diag=F)])
 stool2fit <- as.numeric(as.vector(unlist(dist[stools,fits])))
 
 
-par(mar=c(4,4,2,1))
-plot(density(pairs), type='l', lwd=3, col='red', ylim=c(0,0.025), xlab='Number of shared OTUs', ylab='', main='', las=1)
+par(mar=c(3.5,2.5,2,0.5))
+plot(density(pairs), type='l', lwd=3, col='red', ylim=c(0,0.025), yaxt='n', xlab='Number of shared OTUs', ylab='', main='', las=1)
 points(density(stool2stool), type='l',lwd=3, col='orange')
 points(density(fit2fit), type='l',lwd=3, col='blue')
 points(density(stool2fit), type='l',lwd=3, col='green4')
 legend('topright', c('Stool/FIT pairs','Between FITs & Stool','Between Stools','Between FITs'), col=c('red','green4','orange','blue'), lwd=3, bty='n', cex=0.8)
 points(median(pairs),max(density(pairs)$y)*1.1, pch=8)
-mtext('Density',side=2, at=0.0125, line=3)
-mtext('A', at=-50, side=3, line=0.1, font=2, cex=2)
+mtext('Density',side=2, at=0.0125, line=0.5)
+mtext('A', at=-30, side=3, line=0.1, font=2, cex=2)
 dev.off()
 
 sobs_p <- ks.test(pairs, fit2fit, alternative='less')$p.value
