@@ -93,7 +93,7 @@ fit2fit <- 1-as.numeric(fit2fit[upper.tri(fit2fit, diag=F)])
 stool2fit <- 1-as.numeric(as.vector(unlist(dist[stools,fits])))
 
 
-tiff('results/figure1.tiff', width=9, height=4.5, units='in', res=300)
+tiff('results/figure1.tiff', width=9, height=4.5, units='in', res=150)
 layout(matrix(c(2,1), nrow=1), widths=c(1,1))
 par(mar=c(3.5,2,2,1), mgp=c(2,0.5,0), oma=c(0,0,0,0))
 plot(density(pairs), type='l',lwd=3, col='red', ylim=c(0,4), yaxt='n', xlab='Community Similarity (1-thetaYC)', main='', las=1, tck=-0.02)
@@ -168,7 +168,7 @@ taxonomy <- read.delim('data/fit.phyla.tax', header=T, row.names=1, sep='\t')
 phyla <- taxonomy[names(fit_gen_avg),'Classification']
 levels(phyla)[table(phyla)<30] <- 'Other'
 
-tiff('results/figure2.tiff', height=5, width=11, units='in', res=300)
+tiff('results/figure2.tiff', height=5, width=11, units='in', res=150)
 layout(matrix(c(1,1,1,1,2,4,3,5),nrow=2))
 par(mar=c(2,3,1.5,2), mgp=c(2,0.5,0), oma=c(2,1,1,1), xpd=T)
 plot(stool_gen_avg, fit_gen_avg, log='xy', xlim=c(1e-6,1), ylim=c(1e-6,1), yaxt='n', xaxt='n', pch=21, bg=c('green','purple','red','blue','orange')[phyla], ylab='', xlab='', cex=1.3)
@@ -243,7 +243,7 @@ stool_les_probs <- (stool_les_probs-0.9*min(stool_les_probs))/(1-min(stool_les_p
 stool_les_roc <- roc(stool_data$lesion~stool_les_probs)
 
 # Figure layout
-tiff('results/figure3.tiff', width=9, height=8, units='in', res=300)
+tiff('results/figure3.tiff', width=9, height=8, units='in', res=150)
 layout(matrix(c(3,1,4,2),nrow=2))
 par(mar=c(3,3.5,2,1), mgp=c(2,0.5,0), oma=c(0,3,0,0))
 
