@@ -165,7 +165,7 @@ levels(phyla)[table(phyla)<30] <- 'Other'
 
 tiff('results/figure2.tiff', height=5, width=11, units='in', res=300)
 layout(matrix(c(1,1,1,1,2,4,3,5),nrow=2))
-par(mar=c(2,3,1,2), mgp=c(2,0.5,0), oma=c(2,1,1,1), xpd=T)
+par(mar=c(2,3,1.5,2), mgp=c(2,0.5,0), oma=c(2,1,1,1), xpd=T)
 plot(stool_gen_avg, fit_gen_avg, log='xy', xlim=c(1e-6,1), ylim=c(1e-6,1), yaxt='n', xaxt='n', pch=21, bg=c('green','purple','red','blue','orange')[phyla], ylab='', xlab='', cex=1.3)
 axis(1, at=c(1e-6,1e-5,1e-4,1e-3,1e-2,1e-1,1), labels=c(0,0.001,0.01,0.1,1,10,100))
 axis(2, at=c(1e-6,1e-5,1e-4,1e-3,1e-2,1e-1,1), labels=c(0,0.001,0.01,0.1,1,10,100))
@@ -186,19 +186,19 @@ fit_shared<-shared[meta$type=='fit',]
 
 
 otus <- c('Otu000202','Otu000070','Otu000548','Otu000393')
-taxa <- c('Fusobacterium nucleatum (OTU202)','Porphyromonas asaccharolytica (OTU70)','Peptostreptococcus stomatis (OTU548)','Parvimonas micra (OTU393)')
+taxa <- c(expression(italic('Fusobacterium nucleatum')),expression(italic('Porphyromonas asaccharolytica')),expression(italic('Peptostreptococcus stomatis')),expression(italic('Parvimonas micra')))
+
 
 stool_abunds <- stool_shared[,otus]/3879 + 0.0001
 fit_abunds <- fit_shared[,otus]/3879 + 0.0001
 
-par(mar=c(2,2,1,0.5), mgp=c(2,0.5,0))
+otu_pvals <- c() 
+par(mar=c(2,2,1.5,0.5), mgp=c(2,0.5,0))
 for(i in 1:length(otus)){
   plot(log10(jitter(stool_abunds[,otus[i]], amount=0.00002)), log10(jitter(fit_abunds[,otus[i]], amount=0.00002)), xaxt='n', yaxt='n', ylab='', xlab='', pch=21, cex=1, bg=c('orange','red','royalblue1')[meta$dx], main=taxa[i], cex.main=1, xlim=c(-4,-0.5), ylim=c(-4,-0.5))
   axis(1, at=c(-4,-3,-2,-1), labels=c(0,0.1,1,10) )
   axis(2, at=c(-4,-3,-2,-1), labels=c(0,0.1,1,10) )
-  p <- cor.test(stool_shared[,otus[i]], fit_shared[,otus[i]], method='spearman')$p.value
-  if(p<0.001){legend('topleft', 'p<0.001', bty='n')}
-  else{legend('topleft', sprintf('p=%.1g',cor.test(stool_shared[,otus[i]], fit_shared[,otus[i]], method='spearman')$p.value), bty='n')}
+  otu_pvals[i] <- cor.test(stool_shared[,otus[i]], fit_shared[,otus[i]], method='spearman')$p.value
 }
 legend('bottomright', legend=c('Normal','Adenoma','Cancer'), pch=21, pt.cex=1, pt.bg=c('royalblue1', 'orange','red'))
 
@@ -211,7 +211,7 @@ dev.off()
 
 ```
 
-We tested whether the bacterial community profiles from FIT cartridges recapitulated their stool counterparts. First, we compared the number of OTUs shared between FIT/stool pairs from the same patient to the number of OTUs shared between patients. FIT cartridges and stool from the same patient had significantly more bacterial populations in common than those take from different patients (Fig. 1A, `r pval(sobs_p)`, two-sample Kolmogorov-Smirnov test), indicating that community membership was conserved between stool and FIT cartridges. Second, we calculated the similarity in community structure between samples using 1-thetaYC index [@yue2005similarity]. This metric compares the presence or absence of bacterial populations and their relative abundance. The bacterial community structure of stool and FIT samples from the same patient were significantly more similar to each other than to stool or FIT from other patients (Fig. 1B, `r pval(thyc_p)`). Finally, we observed that the inter-personal variation in community structure between the stool samples of patients was conserved in samples from FIT cartridges (Mantel test r=`r signif(mantel_r, 2)`, `r pval(mantel_p)`). Next, we observed a significant correlation between the abundance of each genus in the paired FIT cartridge and stool samples (Fig. 2A, `r sprintf('Spearman rho: %.3f', gen_corr$estimate)`, `r pval(gen_corr$p.value)`). This suggested that the abundance of bacterial genera was conserved. This correlation was especially strong for the 100 most abundant genera (`r sprintf('Spearman rho: %.3f', gen_100_corr$estimate)`, `r pval(gen_100_corr$p.value)`). Several bacterial species have been repeatedly associated with CRC, including _Fusobacterium nucleatum_, _Porphyromonas asaccharolytica_, _Peptostreptococcus stomatis_, and _Parvimonas micra_ [@warren2013co;@zeller2014potential;@yu2015metagenomic;@baxter2016microbiota].  As expected, the abundance of these species in stool was significantly correlated with their abundance in matched FIT cartridges (all p<`r 'XXXXX'`)(Fig. 2B). We observed some biases in the abundance of certain taxa. In particular, the genus *Pantoea* was detected in `r sum(fit_genera$Otu127>0)` of the 404 FIT cartridges with an average abundance of `r sprintf('%.1f%%', fit_gen_avg['Otu127']*100)`, but was only detected in `r sum(stool_genera$Otu139>0)` stool samples. The genus *Helicobacter* was detected in `r sum(fit_genera$Otu032>0)` FIT cartridges, but only `r sum(stool_genera$Otu032>0)` stool samples. Likewise several genera of *Actinobacteria* were more abundant in stool samples compared to FIT. Notwithstanding these few exceptions, the abundance of the vast majority of genera were well conserved between stool and FIT cartridges. Overall, these findings suggested that that the overall bacterial community structure of the FIT cartridges and stool were similar.
+We tested whether the bacterial community profiles from FIT cartridges recapitulated their stool counterparts. First, we compared the number of OTUs shared between FIT/stool pairs from the same patient to the number of OTUs shared between patients. FIT cartridges and stool from the same patient had significantly more bacterial populations in common than those take from different patients (Fig. 1A, `r pval(sobs_p)`, two-sample Kolmogorov-Smirnov test), indicating that community membership was conserved between stool and FIT cartridges. Second, we calculated the similarity in community structure between samples using 1-thetaYC index [@yue2005similarity]. This metric compares the presence or absence of bacterial populations and their relative abundance. The bacterial community structure of stool and FIT samples from the same patient were significantly more similar to each other than to stool or FIT from other patients (Fig. 1B, `r pval(thyc_p)`). Finally, we observed that the inter-personal variation in community structure between the stool samples of patients was conserved in samples from FIT cartridges (Mantel test r=`r signif(mantel_r, 2)`, `r pval(mantel_p)`). Next, we observed a significant correlation between the abundance of each genus in the paired FIT cartridge and stool samples (Fig. 2A, `r sprintf('Spearman rho: %.3f', gen_corr$estimate)`, `r pval(gen_corr$p.value)`). This suggested that the abundance of bacterial genera was conserved. This correlation was especially strong for the 100 most abundant genera (`r sprintf('Spearman rho: %.3f', gen_100_corr$estimate)`, `r pval(gen_100_corr$p.value)`). Several bacterial species have been repeatedly associated with CRC, including _Fusobacterium nucleatum_, _Porphyromonas asaccharolytica_, _Peptostreptococcus stomatis_, and _Parvimonas micra_ [@warren2013co;@zeller2014potential;@yu2015metagenomic;@baxter2016microbiota].  As expected, the abundance of these species in stool was significantly correlated with their abundance in matched FIT cartridges (all `r pval(max(otu_pvals))`)(Fig. 2B). We observed some biases in the abundance of certain taxa. In particular, the genus *Pantoea* was detected in `r sum(fit_genera$Otu127>0)` of the 404 FIT cartridges with an average abundance of `r sprintf('%.1f%%', fit_gen_avg['Otu127']*100)`, but was only detected in `r sum(stool_genera$Otu139>0)` stool samples. The genus *Helicobacter* was detected in `r sum(fit_genera$Otu032>0)` FIT cartridges, but only `r sum(stool_genera$Otu032>0)` stool samples. Likewise several genera of *Actinobacteria* were more abundant in stool samples compared to FIT. Notwithstanding these few exceptions, the abundance of the vast majority of genera were well conserved between stool and FIT cartridges. Overall, these findings suggested that that the overall bacterial community structure of the FIT cartridges and stool were similar.
 
 
 ```{r compare_models, echo=F, cache=T, warning=F, message=F, results='hide', fig.height=4, fig.width=8}
