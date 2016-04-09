@@ -9,6 +9,14 @@
 ^3^Department of Family Medicine, University of Michigan, Ann Arbor, Michigan.    
 ^\*^Corresponding author: pschloss@umich.edu
 
+**Email addresses:**  
+NTB: ntbaxter@umich.edu  
+CCK: chkoumpo@umich.edu  
+MAMR: maryroge@med.umich.edu  
+MTR: mruffin@med.umich.edu  
+PDS: pschloss@umich.edu  
+
+
 
 
 
@@ -16,12 +24,11 @@
 **Background:** There is a significant demand for colorectal cancer (CRC) screening methods that are noninvasive, inexpensive, and capable of accurately detecting early stage tumors. It has been shown that models based on the gut microbiota can complement the fecal occult blood test and fecal immunochemical test (FIT). However, a barrier to microbiota-based screening is the need to collect and store a patient's stool sample.  
 **Methods:** Using stool samples collected from 404 patients we tested whether the residual buffer containing resuspended feces in FIT cartridges could be used in place of intact stool samples.  
 **Results:** We found that the bacterial DNA isolated from FIT cartridges largely recapitulated the community structure and membership of patients' stool microbiota and that the abundance of bacteria associated with CRC were conserved. We also found that models for detecting CRC that were generated using bacterial abundances from FIT cartridges were equally predictive as models generated using bacterial abundances from stool.  
-**Conclusions:** These findings demonstrate the potential for using FIT cartridges in place of stool for microbiota-based screening for CRC or other microbiome-associated diseases.  
-**Impact:**  This could reduce the need to collect and process separate stool samples and facilitate combining FIT and microbiota-based biomarkers into a single test. Additionally, FIT cartridges could provide a new source of data for studying the role of the microbiome in CRC and other diseases.
+**Conclusions:** These findings demonstrate the potential for using FIT cartridges in place of stool for microbiota-based screening for CRC or other microbiome-associated diseases. This could reduce the need to collect and process separate stool samples and facilitate combining FIT and microbiota-based biomarkers into a single test. Additionally, FIT cartridges could provide a new source of data for studying the role of the microbiome in CRC and other diseases.
 
+**Keywords:** colorectal cancer, gut microbiome, microbiota, fecal immunochemical test, random forest
 
-
-###Introduction  
+###Background  
 Although colorectal cancer (CRC) mortality has declined in recent decades, it remains the second leading cause of death among cancers in the United States [@siegel2014colorectal]. Early detection of CRC is critical since patients whose tumors are detected at an early stage have a greater than 90% chance of survival. However more than a third of individuals for whom screening is recommended do not adhere to screening guidelines [@centers2013vital]. The high cost and invasive nature of structural exams, such as colonoscopy and sigmoidoscopy are barriers for many people [@hsia2000importance;@jones2010barriers]. Unfortunately less expensive non-invasive tests, such as the guaiac fecal occult blood test (gFOBT) and fecal immunochemical test (FIT) fail to reliably detect adenomas [@hundt2009comparative]. Thus, there is a need for novel non-invasive screening methods with improved sensitivity for early stage colonic lesions.
 
 Several studies have demonstrated the potential for the gut microbiota to be used to detect CRC [@zackular2014human;@zeller2014potential;@yu2015metagenomic;@baxter2016microbiota]. Moreover, we and others have shown that combining microbiota-analysis with conventional diagnostics, like gFOBT and FIT, can significantly improve the detection of colonic lesions over either method by itself [@zackular2014human;@zeller2014potential;@baxter2016microbiota]. One limitation of microbiota-based CRC screening is the need to collect and process separate stool samples for microbiota characterization. Given the widespread use of FIT to collect specimens for screening, using the same sample for microbiota characterization could make processing more efficient and less expensive. We hypothesized that the small amount of fecal material contained in FIT sampling cartridges was sufficient to perform both hemoglobin quantification and microbiota characterization. To test this hypothesis, we isolated bacterial DNA from the residual buffer of FIT cartridges that had already been used for quantifying fecal hemoglobin concentrations. We then compared the bacterial composition of the FIT cartridge to that of DNA isolated directly from a patient's stool sample and assessed the ability of FIT cartridge-derived DNA to be used for microbiota-based CRC screening.
@@ -62,21 +69,30 @@ Bacterial DNA isolated from FIT cartridges recapitulated the community structure
 
 The use of FIT cartridges introduced the possibility of sample contamination or bias in the representation of individual OTUs. For example, an OTU associated with _Pantoea_ was found in 98.8% of FIT cartridge samples and only 0.2% of stool samples. There are several possible explanations for this result. It is possible that because the biomass contained in the FIT cartridges is considerably lower than that in stool, the analysis was more sensitive to contaminants in our reagents or the FIT cartridge [@salter2014reagent]. Alternatively, storage conditions could have played a role in biasing the relative abundances of certain genera. The feces in the FIT cartridges spent more time exposed to ambient temperatures in order to be analyzed for hemoglobin concentration. Therefore it is possible that certain bacterial populations, especially aerobes, were able to grow. Considering _Pantoea_ is rarely found in human feces and is more commonly found in soil, plant surfaces, and air we suspect that it was a contaminant. Regardless of the source of this and the other suspicious populations, any biases were limited since the random forest feature selection process did not select these populations and did not effect the ability to detect CRC from FIT cartridge-derived DNA.
 
+###Conclusions  
 These findings demonstrate the potential for using DNA extracted from FIT cartridges for microbiota-based screening. This could reduce the need to collect and process separate stool samples, reducing the cost of screening. Using samples collected from patients that undergo annual FIT screening could be used to monitor temporal changes to a patient's microbiota, making it possible to detect any shifts toward a disease-associated microbiota. It would also be possible to use FIT cartridges rather than separate stool samples for future studies on the role of the gut microbiota and CRC. Since FIT cartridges are already collected for CRC screening, it may be easier to recruit patients for large-scale validations of microbiota-based screening methods.
 
-###Disclosure of Potential Conflicts of Interest  
-The authors declare no conficts of interests.
+###Declarations  
 
-###Authors' Contributions  
-**Conception and design:** N.T. Baxter, M.A.M. Rogers, M.T. Ruffin, P.D. Schloss    
-**Acquisition of data:** N.T. Baxter, C.C. Koumpouras, M.T. Ruffin  
-**Analysis and interpretation of data:** N.T. Baxter, P.D. Schloss  
-**Writing, review, and/or revision of the manuscript:** N.T. Baxter, C.C. Koumpouras, M.A.M. Rogers, M.T. Ruffin, P.D. Schloss  
-**Administrative, technical, or material support:** N.T. Baxter, C.C. Koumpouras  
+**Abbreviations:**  
+FIT: fecal immunochemical test  
+gFOBT: guaic fecal occult blood test  
+OTU: operational taxonomic unit  
+AUC: area under the curve  
+ROC curve: reciever operating characteristic curve  
 
+**Ethics approval and consent to participate:** The University of Michigan Institutional Review Board approved this study, and all subjects provided informed consent. This study conformed to the guidelines of the Helsinki Declaration.
 
-###Funding  
-This study was supported by funding from the National Institutes of Health to P. Schloss (R01GM099514, P30DK034933) and to the Early Detection Research Network (U01CA86400).
+**Availability of data and materials:** Raw fastq files and a MIMARKS file are available through the NCBI Sequence Read Archive [SRP062005]. The data processing steps for going from the raw sequence data to the final manuscript is available at http://www.github.com/SchlossLab/Baxter_FITs_2016.
+
+**Competing interests:** The authors declare no competing financial interests.  
+
+**Funding:** This study was supported by funding from the National Institutes of Health to P. Schloss (R01GM099514, P30DK034933) and to the Early Detection Research Network (U01CA86400).
+
+**Author Contributions:** PDS, MTR, MAMR, and NTB were involved in the conception and design of the study. NTB and CCK performed DNA extractions and 16S rRNA gene sequencing. NTB analyzed the data. All authors interpreted the data. NTB and PDS wrote the manuscript. All authors reviewed and revised the manuscript.
+
+**Acknowledgements:** The authors thank the Great Lakes-New England Early Detection Research Network for providing the fecal samples that were used in this study. 
+
 
 ###Figures  
  
