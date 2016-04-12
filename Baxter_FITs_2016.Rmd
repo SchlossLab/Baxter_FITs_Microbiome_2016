@@ -254,7 +254,7 @@ stool_les_roc <- roc(stool_data$lesion~stool_les_probs)
 # Figure layout
 tiff('results/figure3.tiff', width=9, height=8, units='in', res=150)
 layout(matrix(c(3,1,4,2),nrow=2))
-par(mar=c(3,3.5,2,1), mgp=c(2,0.5,0), oma=c(0,3,0,0))
+par(mar=c(3,3.5,2,1), mgp=c(2,0.5,0), oma=c(0,1.5,0,0))
 
 ### Compare ROC curves
 plot(c(1,0),c(0,1), type='l', lty=2, xlim=c(1.01,0), ylim=c(-0.01,1.01), xaxs='i', yaxs='i', ylab='Sensitivity', xlab='Specificity', las=1)
@@ -295,8 +295,8 @@ plot(stool_canc_probs,fit_canc_probs, bg=c('royalblue1','red')[stool_data$lesion
 legend('topleft', c('Cancer','Normal'), pch=21, pt.bg=c('red','royalblue1'))
 mtext('B', at=-0.1, side=3, line=0.1, font=2, cex=2)
 
-mtext('Cancer vs. Normal\n(microbiota only)', las=0, side=2, at=0.77, outer=T, adj=0.5, line=0.5, font=2, cex=0.8)
-mtext('Any lesion vs. Normal\n(microbiota + hemoglobin)', las=0, side=2, at=0.27, outer=T, adj=0.5, line=0.5, font=2, cex=0.8)
+mtext('Cancer vs. Normal', las=0, side=2, at=0.77, outer=T, adj=0.5, line=0, font=2, cex=1)
+mtext('Any lesion vs. Normal', las=0, side=2, at=0.27, outer=T, adj=0.5, line=0, font=2, cex=1)
 
 dev.off()
 
