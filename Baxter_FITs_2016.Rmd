@@ -175,7 +175,7 @@ taxonomy <- read.delim('data/fit.phyla.tax', header=T, row.names=1, sep='\t')
 phyla <- taxonomy[names(fit_gen_avg),'Classification']
 levels(phyla)[table(phyla)<30] <- 'Other'
 
-tiff('results/figure2.tiff', height=5, width=11, units='in', res=150)
+tiff('results/figure2.tiff', height=5, width=10, units='in', res=150)
 layout(matrix(c(1,1,1,1,2,4,3,5),nrow=2))
 par(mar=c(2,3,1.5,2), mgp=c(2,0.5,0), oma=c(2,1,1,1), xpd=T)
 plot(stool_gen_avg, fit_gen_avg, log='xy', xlim=c(1e-6,1), ylim=c(1e-6,1), yaxt='n', xaxt='n', pch=21, bg=c('green','purple','red','blue','orange')[phyla], ylab='', xlab='', cex=1.3)
@@ -218,7 +218,7 @@ legend('bottomright', legend=c('Normal','Adenoma','Cancer'), pch=21, pt.cex=1, p
 
 
 mtext('Relative abundance in Stool (%)', side=1, at=0.75 ,line=0, outer=T, cex=0.8)
-mtext('Relative abundance in FIT cartridge (%)', side=2, line=-40.5, outer=T, cex=0.8)
+mtext('Relative abundance in FIT cartridge (%)', side=2, line=-37, outer=T, cex=0.8)
 
 
 dev.off()
