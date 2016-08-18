@@ -85,7 +85,7 @@ ROC curve: reciever operating characteristic curve
 
 **Ethics approval and consent to participate:** The University of Michigan Institutional Review Board approved this study, and all subjects provided informed consent. This study conformed to the guidelines of the Helsinki Declaration.
 
-**Availability of data and materials:** Raw fastq files and a MIMARKS file are available through the NCBI Sequence Read Archive [SRP062005]. The data processing steps for going from the raw sequence data to the final manuscript is available at http://www.github.com/SchlossLab/Baxter_FITs_BMCCancer_2016.
+**Availability of data and materials:** Raw sequencing data are available through the NCBI Sequence Read Archive (SRP062005 for stool samples, SRP073172 for FIT cartridges). The data processing steps for going from the raw sequence data to the final manuscript is available at http://www.github.com/SchlossLab/Baxter_FITs_BMCCancer_2016.
 
 **Competing interests:** The authors declare no competing financial interests.  
 
