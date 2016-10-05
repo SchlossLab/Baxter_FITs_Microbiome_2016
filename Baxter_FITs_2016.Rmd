@@ -9,20 +9,20 @@ output:
 bibliography: references.bibtex
 ---
 
-**Authors:** Nielson T. Baxter^1^, Charles C. Koumpouras^1^, Mary A.M. Rogers^2^, Mack T. Ruffin IV^3^, and Patrick D. Schloss^1\*^
+**Authors:** Nielson T. Baxter^2^, Charles C. Koumpouras^1^, Mary A.M. Rogers^2^, Mack T. Ruffin IV^3^, and Patrick D. Schloss^1\*^
 
 
 **Affiliations:**  
 ^1^Department of Microbiology and Immunology, University of Michigan, Ann Arbor, Michigan.  
 ^2^Department of Internal Medicine, University of Michigan, Ann Arbor, Michigan.  
-^3^Department of Family Medicine, University of Michigan, Ann Arbor, Michigan.    
+^3^3Department of Family and Community Medicine, Penn State Hershey medical Center, Herhsey, Pennsylvania    
 ^\*^Corresponding author: pschloss@umich.edu
 
 **Email addresses:**  
 NTB: ntbaxter@umich.edu  
 CCK: chkoumpo@umich.edu  
 MAMR: maryroge@med.umich.edu  
-MTR: mruffin@med.umich.edu  
+MTR: mruffin@hmc.psu.edu  
 PDS: pschloss@umich.edu  
 
 
@@ -68,7 +68,10 @@ Several studies have demonstrated the potential for the gut microbiota to be use
 
 
 ###Methods
-**Study Design / Diagnoses / Stool Collection.** Stool samples were obtained through the Great Lakes-New England Early Detection Research Network. Patients were asymptomatic, at least 18 years old, willing to sign informed consent, able to tolerate removal of 58 mL of blood, and willing to collect a stool sample. Patient age at the time of enrollment ranged from 29 to 89 with a median of 60 years. Patients were excluded if they had undergone surgery, radiation, or chemotherapy for current CRC prior to baseline samples or had inflammatory bowel disease, known hereditary non-polyposis CRC, or familial adenomatous polyposis. Patient diagnoses were determined by colonoscopic examination and histopathological review of any biopsies taken. Colonoscopies were performed and fecal samples were collected in four locations: Toronto (Ontario, Canada), Boston (Massachusetts, USA), Houston (Texas, USA), and Ann Arbor (Michigan, USA). Stool samples were packed in ice, shipped to a processing center via next day delivery and stored at -80˚C. Fecal material for FIT was collected from frozen stool aliquots using OC-Auto® FIT sampling bottles (Polymedco Inc.), processed using an OC-Auto Micro 80 automated system (Polymedco Inc.), and stored at -20C. The University of Michigan Institutional Review Board approved this study, and all subjects provided informed consent.
+**Study Design / Diagnoses / Stool Collection.** Stool samples were obtained through the Great Lakes-New England Early Detection Research Network. Patients were asymptomatic, at least 18 years old, willing to sign informed consent, able to tolerate removal of 58 mL of blood, and willing to collect a stool sample. Patient age at the time of enrollment ranged from 29 to 89 with a median of 60 years. Patients were excluded if they had undergone surgery, radiation, or chemotherapy for current CRC prior to baseline samples or had inflammatory bowel disease, known hereditary non-polyposis CRC, or familial adenomatous polyposis. Patient diagnoses were determined by colonoscopic examination and histopathological review of any biopsies taken. Colonoscopies were performed and fecal samples were collected in four locations: Toronto (Ontario, Canada), Boston (Massachusetts, USA), Houston (Texas, USA), and Ann Arbor (Michigan, USA). Stool samples were packed in ice, shipped to a processing center via next day delivery and stored at -80˚C. Fecal material for FIT was collected from frozen stool aliquots using OC-Auto® FIT sampling bottles (Polymedco Inc.). FIT cartridges were store at 4˚C for up to 48 hours prior to hemoglobin quantification using an OC-Auto Micro 80 automated system (Polymedco Inc.). FIT cartridges were then stored at -20˚C until being thawed for DNA extraction. The University of Michigan Institutional Review Board approved this study, and all subjects provided informed consent.
+
+
+The FIT sampling bottles were refrigerated within an hour of having stool placed in them. They were refrigerated for up to 48 hours before being analyzed for hemoglobin quantification. The hemoglobin quantification took place at room temperature. The cartridges would have been exposed to room temperature for an hour, at most. Then they were stored at -20C until they were later thawed so that an aliquot could be taken for DNA extraction. Unfortunately we don’t have any data about the growth of bacteria in the buffer. We simply tried to minimize exposure to room temperature. 
 
 **16S rRNA gene sequencing.** Processed FIT samples were thawed, and 100 µl of buffer were withdrawn by pipette for DNA extraction. DNA was isolated from the FIT cartridge buffers and the matching stool samples from which they were collected using the PowerSoil-htp 96 Well Soil DNA isolation kit (MO BIO Laboratories) and an epMotion 5075 automated pipetting system (Eppendorf). The V4 region of the bacterial 16S rRNA gene was amplified using custom barcoded primers and sequenced as described previously using an Illumina MiSeq sequencer [@miseq]. The 16S rRNA gene sequences were curated using the mothur software package, as described previously [@mothur;@miseq]. Curated sequences were clustered into operational taxonomic units (OTUs) using a 97% similarity cutoff with the average neighbor clustering algorithm. Sequences were classified using a naive Bayesian classifier trained against a 16S rRNA gene training set provided by the Ribosomal Database Project (RDP) [@wang2007naive]. Species-level classifications for OTUs of interest were determined by using blastn to compare the predominant sequence within each OTU to the NCBI 16S rRNA database. The putative species was only reported for OTUs with greater than 99% sequence identity to a single species in the database; otherwise the consensus RDP classification was used.
 
@@ -329,7 +332,7 @@ ROC curve: reciever operating characteristic curve
 
 **Ethics approval and consent to participate:** The University of Michigan Institutional Review Board approved this study, and all subjects provided informed consent. This study conformed to the guidelines of the Helsinki Declaration.
 
-**Availability of data and materials:** Raw sequencing data are available through the NCBI Sequence Read Archive (SRP062005 for stool samples, SRP073172 for FIT cartridges). The data processing steps for going from the raw sequence data to the final manuscript is available at http://www.github.com/SchlossLab/Baxter_FITs_Microbiome_2016.
+**Availability of data and materials:** Raw sequencing data patient metadata are available through the NCBI Sequence Read Archive (SRP062005 for stool samples and metadata, SRP073172 for FIT cartridges). The data processing steps for going from the raw sequence data to the final manuscript is available at http://www.github.com/SchlossLab/Baxter_FITs_Microbiome_2016.
 
 **Competing interests:** The authors declare that they have no competing interests.  
 
