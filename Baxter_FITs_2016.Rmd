@@ -1,6 +1,5 @@
 ---
-title: DNA from fecal immunochemical test can replace stool for microbiota-based colorectal
-  cancer screening
+title: DNA from fecal immunochemical test can replace stool for detection of colonic lesions using a microbiota-based model
 csl: bmc.csl
 output:
   word_document:
