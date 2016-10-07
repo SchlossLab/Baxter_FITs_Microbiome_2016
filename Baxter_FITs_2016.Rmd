@@ -172,20 +172,22 @@ stool_gen_avg <- sort(stool_gen_avg, decreasing=T)
 
 taxonomy <- read.delim('data/fit.phyla.tax', header=T, row.names=1, sep='\t')
 phyla <- taxonomy[names(fit_gen_avg),'Classification']
-levels(phyla)[table(phyla)<30] <- 'Other'
+levels(phyla)[!(levels(phyla)%in%c('Bacteroidetes','Firmicutes','Proteobacteria','Actinobacteria','Verrucomicrobia','Fusobacteria'))] <- 'Other'
 
 tiff('results/figure2.tiff', height=5, width=10, units='in', res=150)
 layout(matrix(c(1,1,1,1,2,4,3,5),nrow=2))
-par(mar=c(2,3,1.5,2), mgp=c(2,0.5,0), oma=c(2,1,1,1), xpd=T)
-plot(stool_gen_avg, fit_gen_avg, log='xy', xlim=c(1e-6,1), ylim=c(1e-6,1), yaxt='n', xaxt='n', pch=21, bg=c('green','purple','red','blue','orange')[phyla], ylab='', xlab='', cex=1.3)
+par(mar=c(2,3,1.5,2), mgp=c(2,0.5,0), oma=c(2,1,1,1))
+plot(stool_gen_avg, fit_gen_avg, log='xy', xlim=c(1e-6,1), ylim=c(1e-6,1), yaxt='n', xaxt='n', pch=21, bg=c('grey','purple','red','blue','green','yellow','orange2')[phyla], ylab='', xlab='', cex=1.3)
+abline(0,1, lty=3)
 axis(1, at=c(1e-6,1e-5,1e-4,1e-3,1e-2,1e-1,1), labels=c(0,0.001,0.01,0.1,1,10,100))
 axis(2, at=c(1e-6,1e-5,1e-4,1e-3,1e-2,1e-1,1), labels=c(0,0.001,0.01,0.1,1,10,100))
-legend('bottomright', c('Bacteroidetes','Firmicutes','Proteobacteria','Actinobacteria','Other'), pch=21, pt.bg=c('red','blue','orange','purple','green'), pt.cex=1.3)
+legend('bottomright', c('Bacteroidetes','Firmicutes','Proteobacteria','Actinobacteria','Verrucomicrobia','Fusobacteria','Others'), pch=21, pt.bg=c('red','blue','yellow','purple','orange2','green','grey'), pt.cex=1.3)
 
 mtext('A', at=3e-7, side=3, line=0, font=2, cex=2)
 mtext('Average relative abundance in Stool (%)', side=1, line=2, cex=0.8)
 mtext('Average relative abundance in FIT cartridge (%)', side=2, line=2, cex=0.8)
 mtext('B', side=3, line=0, at=5, font=2, cex=2)
+
 
 
 gen_corr <- cor.test(stool_gen_avg,fit_gen_avg, method='spearman')
@@ -208,6 +210,7 @@ otu_corrs <- c()
 par(mar=c(2,2,1.5,0.5), mgp=c(2,0.5,0))
 for(i in 1:length(otus)){
   plot(log10(jitter(stool_abunds[,otus[i]], amount=0.00002)), log10(jitter(fit_abunds[,otus[i]], amount=0.00002)), xaxt='n', yaxt='n', ylab='', xlab='', pch=21, cex=1, bg=c('orange','red','royalblue1')[meta$dx], main=taxa[i], cex.main=1, xlim=c(-4,-0.5), ylim=c(-4,-0.5))
+  abline(0,1, lty=3)
   axis(1, at=c(-4,-3,-2,-1), labels=c(0,0.1,1,10) )
   axis(2, at=c(-4,-3,-2,-1), labels=c(0,0.1,1,10) )
   otu_pvals[i] <- cor.test(stool_shared[,otus[i]], fit_shared[,otus[i]], method='spearman')$p.value
@@ -313,7 +316,7 @@ Bacterial DNA isolated from the residula buffer of FIT cartridges recapitulated 
 
 Sinha et al. compared a variety of sampling and storage methods for fecal samples to be used for microbiome analyses [@sinha2015collecting]. They found reproducible biases according to sampling method and time at ambient temperature. Likewise, we observed biases in the abundance certain bacterial populations in FIT cartridges compared stool. For example, an OTU associated with _Pantoea_ was found in `r sprintf('%.1f', 100*sum(fit_genera$Otu127>0)/nrow(fit_genera))`% of FIT cartridge samples and only `r sprintf('%.1f', 100*sum(stool_genera$Otu127>0)/nrow(stool_genera))`% of stool samples. It is likely that because the biomass contained in the FIT cartridges is considerably lower than that in stool, the analysis was more sensitive to contaminants in our reagents or the FIT cartridges themselves [@salter2014reagent]. This seems to be the case for genus _Pantoea_, since a sequence classified as _Pantoea_ was detected in several uninoculated FIT cartridges used as negative controls. It is also possible that storage conditions could have played a role in biasing the relative abundances of certain genera. The feces in the FIT cartridges spent more time exposed to ambient temperatures while being analyzed for hemoglobin concentration. Therefore it is possible that certain bacterial populations, especially aerobes, were able to grow Alternatively, there could have been a difference in DNA extraction efficiency between the stool samples and FIT cartridge buffer. Actinobacteria, which were overrepresented in stool samples, require mechanical lysis for DNA extraction [@walker201516s]. It is possible that the particulates in stool allowed for more efficient mechanical lysis of Actinobacteria cells compared to the FIT cartridge buffer. Regardless, these biases had no effect on the ability to detect CRC from FIT cartridge-derived DNA, as the random forest feature selection process did not select these populations.
 
-Colonoscopy, rather than stool screening, remains the more effective CRC screening approach. However, non-invasive stool tests, including those based on microbiota, might have future utility in directing high risk subjects towards a colonoscopy, increasing the overall performance of CRC screening and reducing morbidity and mortality. The ability to assay hemoglobin qunatification and microbiota-based bioimarkers with single sampling kit would reduce cost and improve efficiency. It would also facilite combining results from the two methods into single model for predicting the presence of lesions, which has been shown to improve sensitivity over either method alone. Incoporating other host-associated stool biomarkers and clinical data could further improve the accuracy of such a model.
+Colonoscopy, rather than stool screening, remains the more effective CRC screening approach. However, non-invasive stool tests, including those based on microbiota, might have future utility in directing high risk subjects towards a colonoscopy, increasing the overall performance of CRC screening and reducing morbidity and mortality. The ability to assay hemoglobin qunatification and microbiota-based bioimarkers with single sampling kit would reduce cost and improve efficiency. It would also facilite combining results from the two methods into single model for predicting the presence of lesions, which has been shown to improve sensitivity over either method alone [@baxter2016microbiota]. Incoporating other host-associated stool biomarkers and clinical data could further improve the accuracy of such a model.
 
 ###Conclusions  
 The findings from this study demonstrate the potential for using DNA from FIT cartridges for microbiota-based screening. This could reduce the need to collect and process separate stool samples, decreasing the cost of screening. It is also possible to use FIT cartridges rather than separate stool samples for future studies on the role of the gut microbiota and cancer. Samples collected from patients who undergo annual FIT screening could be used to monitor temporal changes in a patient's microbiota, making it possible to detect shifts toward a disease-associated microbiota. Since FIT cartridges are currently used for CRC screening, our findings may facilitate large-scale validations of microbiota-based screening methods.
