@@ -335,6 +335,8 @@ ROC curve: reciever operating characteristic curve
 **Ethics approval and consent to participate:** The University of Michigan Institutional Review Board approved this study, and all subjects provided informed consent. This study conformed to the guidelines of the Helsinki Declaration.
 
 **Availability of data and materials:** Raw sequencing data patient metadata are available through the NCBI Sequence Read Archive (SRP062005 for stool samples and metadata, SRP073172 for FIT cartridges). The data processing steps for going from the raw sequence data to the final manuscript is available at http://www.github.com/SchlossLab/Baxter_FITs_Microbiome_2016.
+**Consent for publication:** Not applicable.
+
 
 **Competing interests:** The authors declare that they have no competing interests.  
 
